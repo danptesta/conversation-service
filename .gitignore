@@ -1,0 +1,39 @@
+# package directories
+/node_modules/
+/jspm_packages/
+/.config/
+/coverage/
+/.nyc_output/
+
+.cache/
+.local/
+
+.bash_history
+
+# Serverless directories
+/.serverless/
+.serverlessrc
+
+# IntelliJ IDEA
+/.idea/
+*.iml
+
+# VS Code
+/.vscode/
+
+# Credentials
+**/.aws/
+.vault-token
+.ssh
+
+# OSX
+.DS_Store
+.AppleDouble
+.LSOverride
+
+package-lock.json
+
+# Stryker (mutation testing) generated files
+/.stryker-tmp/
+/reports/
+stryker.log

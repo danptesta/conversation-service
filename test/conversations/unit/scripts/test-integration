@@ -1,0 +1,6 @@
+#!/bin/bash
+TEST_FILES="${1:-./test/**/*.int.js}"
+export AWS_REGION=$(jq -r .environment.region ./environment/${STAGE}/${STAGE}.json)
+export LOG_LEVEL=debug
+NODE_ENV=test mocha ${TEST_FILES}
+exit 0
