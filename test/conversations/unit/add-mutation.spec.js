@@ -5,7 +5,7 @@ const makeApp = require('../../../src/conversations/app');
 const rejectMissingFields = require('../helpers/reject-missing-fields');
 const rejectUnsupportedFields = require('../helpers/reject-unsupported-fields');
 const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
-// const repositoryFixture = require('../fixtures/upload-repo-fixture')();
+// const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
 const {
   RequiredParameterError,
   InvalidPropertyError,
@@ -15,7 +15,7 @@ describe('app:', function () {
   let app;
 
   beforeEach(async function () {
-    // const repository = repositoryFixture.createMemoryUploadRepo();
+    // const repository = repositoryFixture.createMemoryRepo();
     // app = makeApp({ repository });
     app = makeApp({});
   });
