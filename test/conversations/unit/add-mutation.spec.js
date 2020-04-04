@@ -83,6 +83,17 @@ describe('app:', function () {
       });
     });
 
+    context('When the mutation has an unsupported author:', function () {
+      it('should throw an error', async function () {
+        await rejectAddMutation({
+          command: createAddMutationCommand({ author: 'unsupported_author' }),
+          error: InvalidPropertyError,
+          errorMessage: 'author must be one of these values: alice, bob',
+          customMessage: 'unsupported author',
+        });
+      });
+    });
+
     async function rejectAddMutation({
       command, error, errorMessage, customMessage,
     }) {
