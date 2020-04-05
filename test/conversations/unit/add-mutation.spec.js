@@ -4,6 +4,7 @@
 const makeApp = require('../../../src/conversations/app');
 const rejectMissingFields = require('../helpers/reject-missing-fields');
 const rejectUnsupportedFields = require('../helpers/reject-unsupported-fields');
+const rejectUnsupportedValues = require('../helpers/reject-unsupported-values');
 const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
 // const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
 const {
@@ -90,6 +91,26 @@ describe('app:', function () {
           error: InvalidPropertyError,
           errorMessage: 'author must be one of these values: alice, bob',
           customMessage: 'unsupported author',
+        });
+      });
+    });
+
+    context('When the mutation has an invalid origin:', function () {
+      it('should throw an error', async function () {
+        await rejectUnsupportedValues({
+          appFunction: app.addMutation,
+          createCommand: createAddMutationCommand,
+          field: 'origin',
+          errorMessage: "origin must be of the form '{ alice: x, bob: y }' where x and y are numbers >= 0",
+          unsupportedValues: [
+            'not an object', // must be object type
+            { bob: 0 }, // missing alice
+            { alice: 'not a number' },
+            { alice: 0 }, // missing bob
+            {}, // missing alice and bob
+            { alice: 0, bob: 0, unsupportedKey: 0 },
+            { alice: 0, bob: -1 }, // values must be >= 0
+          ],
         });
       });
     });
