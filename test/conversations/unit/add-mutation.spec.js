@@ -2,14 +2,15 @@
   class-methods-use-this,no-unused-expressions,global-require */
 
 const makeApp = require('../../../src/conversations/app');
-const rejectMissingFields = require('../helpers/reject-missing-fields');
-const rejectUnsupportedFields = require('../helpers/reject-unsupported-fields');
-const rejectUnsupportedValues = require('../helpers/reject-unsupported-values');
+// const rejectInvalidInputs = require('../helpers/reject-invalid-inputs');
+// const rejectMissingFields = require('../helpers/reject-missing-fields');
+// const rejectUnsupportedFields = require('../helpers/reject-unsupported-fields');
+// const rejectUnsupportedValues = require('../helpers/reject-unsupported-values');
 const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
 // const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
 const {
-  RequiredParameterError,
   InvalidPropertyError,
+  InvalidInputError,
 } = require('../../../src/helpers/errors');
 
 describe('app:', function () {
@@ -34,83 +35,55 @@ describe('app:', function () {
   });
 
   describe('#addMutation():', function () {
-    context('When the conversationId is missing:', function () {
-      const rejectConversationIdRequired = async (command) => {
+    context('When the input format is invalid:', function () {
+      const rejectInvalidInput = async (invalidInput, customMessage) => {
+        const command = createAddMutationCommand({});
         await rejectAddMutation({
-          command,
-          error: RequiredParameterError,
-          errorMessage: 'Missing required fields: conversationId',
+          command: { ...command, ...invalidInput },
+          error: InvalidInputError,
+          customMessage,
         });
       };
 
       it('should throw an error', async function () {
-        await rejectConversationIdRequired(null);
-        await rejectConversationIdRequired(undefined);
-        await rejectConversationIdRequired({});
-        await rejectConversationIdRequired({ conversationId: null });
-        await rejectConversationIdRequired({ conversationId: undefined });
-        await rejectConversationIdRequired({ conversationId: '' });
+        await rejectInvalidInput({ conversationId: null });
+        await rejectInvalidInput({ conversationId: undefined });
+        await rejectInvalidInput({ conversationId: 1 }, 'must be a string');
+        await rejectInvalidInput({ conversationId: 'x y' }, 'no space allowed');
+        await rejectInvalidInput({ conversationId: 'xx' }, 'must be >= 3 chars');
+        await rejectInvalidInput({ author: 'dan' }, 'must be alice or bob');
+        await rejectInvalidInput({ invalidField: 'xyz' }, 'field not allowed');
+        // etc, etc, many possible permutations of invalid input
+        // this is quick/simple way to guard against invalid input,
+        // but not very user-friendly.  if I had more time I would improve
+        // the error handling to indicate what is wrong with the input.
       });
     });
 
-    context('When the conversationId is not a string', function () {
+    context('When length is given on insert:', function () {
       it('should throw an error', async function () {
         await rejectAddMutation({
-          command: { conversationId: 1 },
+          command: createAddMutationCommand({
+            data: {
+              index: 0, length: 1, text: 'hello', type: 'insert',
+            },
+          }),
           error: InvalidPropertyError,
-          errorMessage: 'conversationId must be a string',
+          errorMessage: 'length is not allowed on insert',
         });
       });
     });
 
-    context('When the mutation is missing required fields:', function () {
-      it('should throw an error', async function () {
-        await rejectMissingFields({
-          appFunction: app.addMutation,
-          createCommand: createAddMutationCommand,
-          requiredFields: ['author', 'data', 'origin'],
-        });
-      });
-    });
-
-    context('When the mutation has unsupported fields:', function () {
-      it('should throw an error', async function () {
-        await rejectUnsupportedFields({
-          appFunction: app.addMutation,
-          createCommand: createAddMutationCommand,
-          unsupportedFields: ['unsupportedField',
-            'aws:rep:deleting', 'aws:rep:updatetime', 'aws:rep:updateregion'],
-        });
-      });
-    });
-
-    context('When the mutation has an unsupported author:', function () {
+    context('When text is given on delete:', function () {
       it('should throw an error', async function () {
         await rejectAddMutation({
-          command: createAddMutationCommand({ author: 'unsupported_author' }),
+          command: createAddMutationCommand({
+            data: {
+              index: 0, length: 1, text: 'hello', type: 'delete',
+            },
+          }),
           error: InvalidPropertyError,
-          errorMessage: 'author must be one of these values: alice, bob',
-          customMessage: 'unsupported author',
-        });
-      });
-    });
-
-    context('When the mutation has an invalid origin:', function () {
-      it('should throw an error', async function () {
-        await rejectUnsupportedValues({
-          appFunction: app.addMutation,
-          createCommand: createAddMutationCommand,
-          field: 'origin',
-          errorMessage: "origin must be of the form '{ alice: x, bob: y }' where x and y are numbers >= 0",
-          unsupportedValues: [
-            'not an object', // must be object type
-            { bob: 0 }, // missing alice
-            { alice: 'not a number' },
-            { alice: 0 }, // missing bob
-            {}, // missing alice and bob
-            { alice: 0, bob: 0, unsupportedKey: 0 },
-            { alice: 0, bob: -1 }, // values must be >= 0
-          ],
+          errorMessage: 'text is not allowed on delete',
         });
       });
     });
