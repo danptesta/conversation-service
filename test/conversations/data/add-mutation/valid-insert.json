@@ -1,0 +1,13 @@
+{
+  "author": "alice",
+  "conversationId": "cid1",
+  "data": {
+    "index": 0,
+    "text": "a",
+    "type": "insert"
+  },
+  "origin": {
+    "alice": 0,
+    "bob": 0
+  }
+}

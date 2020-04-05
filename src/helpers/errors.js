@@ -20,6 +20,18 @@ class InvalidPropertyError extends Error {
   }
 }
 
+class InvalidInputError extends Error {
+  constructor(errors) {
+    super('Invalid input');
+    this.name = 'InvalidInputError';
+    this.errors = errors;
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, InvalidInputError);
+    }
+  }
+}
+
 class RequiredParameterError extends Error {
   constructor(param) {
     super(`Missing required fields: ${param}`);
@@ -45,6 +57,7 @@ class SystemError extends Error {
 module.exports = {
   UniqueConstraintError,
   InvalidPropertyError,
+  InvalidInputError,
   RequiredParameterError,
   SystemError,
 };

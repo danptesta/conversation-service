@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema#",
+  "$id": "http://danptesta.com/schemas/add-mutation.json",
   "title": "add-mutation",
   "description": "Add mutation input schema",
   "type": "object",
@@ -13,6 +14,7 @@
     },
     "conversationId": {
       "type": "string",
+      "pattern": "^\\S+$",
       "minLength": 3
     },
     "data": {
