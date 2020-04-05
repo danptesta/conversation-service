@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "add-mutation",
+  "description": "Add mutation input schema",
+  "type": "object",
+  "properties": {
+    "author": {
+      "type": "string",
+      "enum": [
+        "alice",
+        "bob"
+      ]
+    },
+    "conversationId": {
+      "type": "string",
+      "minLength": 3
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "insert",
+            "delete"
+          ]
+        }
+      },
+      "required": [
+        "index",
+        "type"
+      ]
+    },
+    "origin": {
+      "type": "object",
+      "properties": {
+        "alice": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bob": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "alice",
+        "bob"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "author",
+    "conversationId",
+    "data",
+    "origin"
+  ],
+  "additionalProperties": false
+}
