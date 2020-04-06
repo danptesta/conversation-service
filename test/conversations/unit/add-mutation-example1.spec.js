@@ -13,7 +13,7 @@ describe('app:', function () {
   });
 
   describe('#addMutation() - Example 1:', function () {
-    context('When Bob inserts mutations', function () {
+    context('When Bob adds insert mutations', function () {
       const testBobInsert = async ({
         index, text, bob, expected,
       }) => {
@@ -35,7 +35,7 @@ describe('app:', function () {
         result.should.equal(expected, `Bob insert: index=${index}, bob=${bob}, text=[${text}]`);
       };
 
-      it('should succeed', async function () {
+      it('should return text with the inserted words', async function () {
         await testBobInsert({
           index: 0, text: 'The', bob: 0, expected: 'The',
         });
