@@ -1,5 +1,7 @@
 const insertText = (text, data) => {
-  return `${text}${data.text}`;
+  const before = text.substring(0, data.index);
+  const after = text.substring(data.index);
+  return before + data.text + after;
 };
 
 const deleteText = (text, { index, length }) => {
