@@ -86,7 +86,7 @@ describe('app:', function () {
     context('When the origin does not match current state:', function () {
       it('should throw an error', async function () {
         await rejectAddMutation({
-          command: createAddMutationCommand({ origin: { alice: 0, bob: 2 } }),
+          command: createAddMutationCommand({ origin: { alice: 0, bob: 1 } }),
           error: InvalidPropertyError,
           errorMessage: 'origin does not match current state',
         });

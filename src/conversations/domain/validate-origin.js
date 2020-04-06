@@ -4,19 +4,20 @@ const isSameOrigin = (origin1, origin2) => (origin1.alice === origin2.alice) && 
 
 const isNewConversation = conversation => conversation.mutations.length === 0;
 
-const getLastMutation = conversation => conversation.mutations[conversation.mutations.length - 1];
+const getLastOrigin = conversation => conversation.mutations[conversation.mutations.length - 1].origin;
 
-// eslint-disable-next-line arrow-body-style
-const getLastOrigin = (conversation) => {
-  return isNewConversation(conversation)
-    ? { alice: 0, bob: 0 }
-    : getLastMutation(conversation).origin;
-};
-
-const getCurrentState = (conversation, author) => {
-  const result = getLastOrigin(conversation);
+const calculateCurrentState = (conversation, author) => {
+  const lastOrigin = getLastOrigin(conversation);
+  const result = { ...lastOrigin };
   result[author] += 1;
   return result;
+};
+
+// eslint-disable-next-line arrow-body-style
+const getCurrentState = (conversation, author) => {
+  return isNewConversation(conversation)
+    ? { alice: 0, bob: 0 }
+    : calculateCurrentState(conversation, author);
 };
 
 const isCurrentState = (conversation, mutation) => {

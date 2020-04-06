@@ -37,16 +37,16 @@ describe('app:', function () {
 
       it('should succeed', async function () {
         await testBobInsert({
-          index: 0, text: 'The', bob: 1, expected: 'The',
+          index: 0, text: 'The', bob: 0, expected: 'The',
         });
         await testBobInsert({
-          index: 3, text: ' house', bob: 2, expected: 'The house',
+          index: 3, text: ' house', bob: 1, expected: 'The house',
         });
         await testBobInsert({
-          index: 3, text: ' is', bob: 3, expected: 'The house is',
+          index: 9, text: ' is', bob: 2, expected: 'The house is',
         });
         await testBobInsert({
-          index: 3, text: ' red.', bob: 4, expected: 'The house is red.',
+          index: 12, text: ' red.', bob: 3, expected: 'The house is red.',
         });
       });
     });
