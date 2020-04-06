@@ -29,7 +29,7 @@ describe('app:', function () {
     });
   });
 
-  describe('#addMutation():', function () {
+  describe('#addMutation() - validate input:', function () {
     context('When the input format is invalid:', function () {
       const rejectInvalidInput = async (invalidInput, customMessage) => {
         const command = createAddMutationCommand({});
@@ -83,13 +83,6 @@ describe('app:', function () {
       });
     });
 
-    /*
-    Exemple 1 - only insert mutations from Bob
-Let's say Bob wants to write the text "The house is red.". He will write "The", then "house", "is" and finally "red.".
-This will lead to the following mutations:
-B(0, 0)INS0:'The'B(1, 0)INS3:' house'B(2, 0)INS9:' is'B(3, 0)INS12:' red.'. The state is now in the position (4, 0).
-    */
-
     context('When the origin does not match current state:', function () {
       it('should throw an error', async function () {
         await rejectAddMutation({
@@ -106,44 +99,6 @@ B(0, 0)INS0:'The'B(1, 0)INS3:' house'B(2, 0)INS9:' is'B(3, 0)INS12:' red.'. The 
           command: createAddMutationCommand({ data: { index: 1, text: 'hello', type: 'insert' } }),
           error: InvalidPropertyError,
           errorMessage: 'index is out of range',
-        });
-      });
-    });
-
-    context('When Bob inserts mutations', function () {
-      const testBobInsert = async ({
-        index, text, bob, expected,
-      }) => {
-        const command = {
-          author: 'bob',
-          conversationId: 'only-bob_only-insert',
-          data: {
-            index,
-            text,
-            type: 'insert',
-          },
-          origin: {
-            alice: 0,
-            bob,
-          },
-        };
-
-        const result = await app.addMutation(command);
-        result.should.equal(expected, `Bob insert: index=${index}, bob=${bob}, text=[${text}]`);
-      };
-
-      it('should succeed', async function () {
-        await testBobInsert({
-          index: 0, text: 'The', bob: 1, expected: 'The',
-        });
-        await testBobInsert({
-          index: 3, text: ' house', bob: 2, expected: 'The house',
-        });
-        await testBobInsert({
-          index: 3, text: ' is', bob: 3, expected: 'The house is',
-        });
-        await testBobInsert({
-          index: 3, text: ' red.', bob: 4, expected: 'The house is red.',
         });
       });
     });
