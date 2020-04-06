@@ -2,12 +2,8 @@
   class-methods-use-this,no-unused-expressions,global-require */
 
 const makeApp = require('../../../src/conversations/app');
-// const rejectInvalidInputs = require('../helpers/reject-invalid-inputs');
-// const rejectMissingFields = require('../helpers/reject-missing-fields');
-// const rejectUnsupportedFields = require('../helpers/reject-unsupported-fields');
-// const rejectUnsupportedValues = require('../helpers/reject-unsupported-values');
 const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
-// const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
+const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
 const {
   InvalidPropertyError,
   InvalidInputError,
@@ -17,9 +13,8 @@ describe('app:', function () {
   let app;
 
   beforeEach(async function () {
-    // const repository = repositoryFixture.createMemoryRepo();
-    // app = makeApp({ repository });
-    app = makeApp({});
+    const repository = repositoryFixture.createMemoryRepo();
+    app = makeApp({ repository });
   });
 
   context('When instantiating the app:', function () {
@@ -85,6 +80,48 @@ describe('app:', function () {
           error: InvalidPropertyError,
           errorMessage: 'text is not allowed on delete',
         });
+      });
+    });
+
+    /*
+    Exemple 1 - only insert mutations from Bob
+Let's say Bob wants to write the text "The house is red.". He will write "The", then "house", "is" and finally "red.".
+This will lead to the following mutations:
+B(0, 0)INS0:'The'B(1, 0)INS3:' house'B(2, 0)INS9:' is'B(3, 0)INS12:' red.'. The state is now in the position (4, 0).
+    */
+
+    context('When the origin does not match current state:', function () {
+      it('should throw an error', async function () {
+        await rejectAddMutation({
+          command: createAddMutationCommand({ origin: { alice: 0, bob: 1 } }),
+          error: InvalidPropertyError,
+          errorMessage: 'origin does not match current state',
+        });
+      });
+    });
+
+    context('When Bob inserts mutations', function () {
+      const testBobInsert = async ({ index, text, bob }) => {
+        const command = {
+          author: 'bob',
+          conversationId: 'only-bob_only-insert',
+          data: {
+            index,
+            text,
+            type: 'insert',
+          },
+          origin: {
+            alice: 0,
+            bob,
+          },
+        };
+
+        const result = await app.addMutation(command);
+        result.should.equal('The');
+      };
+
+      it('should succeed', async function () {
+        await testBobInsert({ index: 0, text: 'The', bob: 0 });
       });
     });
 
