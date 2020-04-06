@@ -13,13 +13,13 @@ describe('app:', function () {
   });
 
   describe('#addMutation() - Example 1:', function () {
-    context('When Bob adds insert mutations', function () {
+    context('When Bob adds delete and insert mutations', function () {
       const testBobInsert = async ({
         index, text, bob, expected,
       }) => {
         const command = {
           author: 'bob',
-          conversationId: 'example1',
+          conversationId: 'example2',
           data: {
             index,
             text,
@@ -35,7 +35,34 @@ describe('app:', function () {
         result.should.equal(expected, `Bob insert: index=${index}, bob=${bob}, text=[${text}]`);
       };
 
-      it('should return text with the inserted words', async function () {
+      const testBobDelete = async ({
+        index, length, bob, expected,
+      }) => {
+        const command = {
+          author: 'bob',
+          conversationId: 'example2',
+          data: {
+            index,
+            length,
+            type: 'delete',
+          },
+          origin: {
+            alice: 0,
+            bob,
+          },
+        };
+
+        const result = await app.addMutation(command);
+        result.should.equal(expected, `Bob delete: index=${index}, bob=${bob}, length=${length}`);
+      };
+
+      /*
+Exemple 2 - insert and delete mutations from Bob
+Bob now realizes that the house is blue. He now want to replace the previous text by "The house is blue".
+This will lead to add the following mutations:B(4, 0)DEL13:4B(5, 0)INS13:'blue'. The state is now in the position (6, 0).
+      */
+
+      it('should return text with the deleted and inserted words', async function () {
         await testBobInsert({
           index: 0, text: 'The', bob: 0, expected: 'The',
         });
@@ -47,6 +74,12 @@ describe('app:', function () {
         });
         await testBobInsert({
           index: 12, text: ' red.', bob: 3, expected: 'The house is red.',
+        });
+        await testBobDelete({
+          index: 13, length: 4, bob: 4, expected: 'The house is ',
+        });
+        await testBobInsert({
+          index: 13, text: 'blue.', bob: 5, expected: 'The house is blue.',
         });
       });
     });
