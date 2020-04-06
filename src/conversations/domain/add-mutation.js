@@ -1,31 +1,15 @@
-const { InvalidPropertyError } = require('../../helpers/errors');
+const validateType = require('./validate-type');
+const validateOrigin = require('./validate-origin');
+const makeConversation = require('./make-conversation');
 
-const validateInsertType = (data) => {
-  if (data.length) {
-    throw new InvalidPropertyError('length is not allowed on insert');
-  }
+const validate = (conversation, mutation) => {
+  validateType(conversation, mutation);
+  validateOrigin(conversation, mutation);
 };
 
-const validateDeleteType = (data) => {
-  if (data.text) {
-    throw new InvalidPropertyError('text is not allowed on delete');
-  }
-};
-
-const validateType = ({ data }) => {
-  if (data.type === 'insert') {
-    validateInsertType(data);
-  } else {
-    validateDeleteType(data);
-  }
-};
-
-const validate = (input) => {
-  validateType(input);
-};
-
-const addMutation = (input) => {
-  validate(input);
+const addMutation = (conversation, mutation) => {
+  validate(conversation, mutation);
+  return makeConversation(conversation.conversationId, [...conversation.mutations, mutation]);
 };
 
 module.exports = addMutation;

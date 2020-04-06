@@ -2,12 +2,8 @@
   class-methods-use-this,no-unused-expressions,global-require */
 
 const makeApp = require('../../../src/conversations/app');
-// const rejectInvalidInputs = require('../helpers/reject-invalid-inputs');
-// const rejectMissingFields = require('../helpers/reject-missing-fields');
-// const rejectUnsupportedFields = require('../helpers/reject-unsupported-fields');
-// const rejectUnsupportedValues = require('../helpers/reject-unsupported-values');
 const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
-// const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
+const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
 const {
   InvalidPropertyError,
   InvalidInputError,
@@ -17,9 +13,8 @@ describe('app:', function () {
   let app;
 
   beforeEach(async function () {
-    // const repository = repositoryFixture.createMemoryRepo();
-    // app = makeApp({ repository });
-    app = makeApp({});
+    const repository = repositoryFixture.createMemoryRepo();
+    app = makeApp({ repository });
   });
 
   context('When instantiating the app:', function () {
@@ -34,7 +29,7 @@ describe('app:', function () {
     });
   });
 
-  describe('#addMutation():', function () {
+  describe('#addMutation() - validate input:', function () {
     context('When the input format is invalid:', function () {
       const rejectInvalidInput = async (invalidInput, customMessage) => {
         const command = createAddMutationCommand({});
@@ -84,6 +79,26 @@ describe('app:', function () {
           }),
           error: InvalidPropertyError,
           errorMessage: 'text is not allowed on delete',
+        });
+      });
+    });
+
+    context('When the origin does not match current state:', function () {
+      it('should throw an error', async function () {
+        await rejectAddMutation({
+          command: createAddMutationCommand({ origin: { alice: 0, bob: 2 } }),
+          error: InvalidPropertyError,
+          errorMessage: 'origin does not match current state',
+        });
+      });
+    });
+
+    context('When the insert index is out of range:', function () {
+      it('should throw an error', async function () {
+        await rejectAddMutation({
+          command: createAddMutationCommand({ data: { index: 1, text: 'hello', type: 'insert' } }),
+          error: InvalidPropertyError,
+          errorMessage: 'index is out of range',
         });
       });
     });

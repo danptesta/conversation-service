@@ -1,7 +1,7 @@
 const addMutationCommand = require('./commands/add-mutation');
 
-const makeApp = () => Object.freeze({
-  addMutation: async command => addMutationCommand({ command }),
+const makeApp = ({ repository }) => Object.freeze({
+  addMutation: async command => addMutationCommand({ command, repository }),
 });
 
 module.exports = makeApp;
