@@ -1,22 +1,36 @@
 const { InvalidPropertyError } = require('../../helpers/errors');
 
-const validateInsertType = (data) => {
+const buildText = mutations => ((mutations.length > 0) ? mutations[0].data.text : '');
+
+const validateInsertNoLength = (data) => {
   if (data.length) {
     throw new InvalidPropertyError('length is not allowed on insert');
   }
 };
 
-const validateDeleteType = (data) => {
+const validateInsertIndexInRange = (conversation, data) => {
+  const currentText = buildText(conversation.mutations);
+  if (data.index > currentText.length) {
+    throw new InvalidPropertyError('index is out of range');
+  }
+};
+
+const validateInsert = (conversation, data) => {
+  validateInsertNoLength(data);
+  validateInsertIndexInRange(conversation, data);
+};
+
+const validateDelete = (data) => {
   if (data.text) {
     throw new InvalidPropertyError('text is not allowed on delete');
   }
 };
 
-const validateType = ({ data }) => {
+const validateType = (conversation, { data }) => {
   if (data.type === 'insert') {
-    validateInsertType(data);
+    validateInsert(conversation, data);
   } else {
-    validateDeleteType(data);
+    validateDelete(data);
   }
 };
 
@@ -37,11 +51,9 @@ const validateOriginMatchesCurrentState = ({ conversation, mutation }) => {
 };
 
 const validate = ({ conversation, mutation }) => {
-  validateType(mutation);
+  validateType(conversation, mutation);
   validateOriginMatchesCurrentState({ conversation, mutation });
 };
-
-const buildText = mutations => mutations[0].data.text;
 
 const applyMutation = ({ conversation, mutation }) => ({
   conversationId: conversation.conversationId,

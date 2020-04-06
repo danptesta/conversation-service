@@ -100,6 +100,16 @@ B(0, 0)INS0:'The'B(1, 0)INS3:' house'B(2, 0)INS9:' is'B(3, 0)INS12:' red.'. The 
       });
     });
 
+    context('When the insert index is out of range:', function () {
+      it('should throw an error', async function () {
+        await rejectAddMutation({
+          command: createAddMutationCommand({ data: { index: 1, text: 'hello', type: 'insert' } }),
+          error: InvalidPropertyError,
+          errorMessage: 'index is out of range',
+        });
+      });
+    });
+
     context('When Bob inserts mutations', function () {
       const testBobInsert = async ({ index, text, bob }) => {
         const command = {
