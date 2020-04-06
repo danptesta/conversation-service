@@ -1,18 +1,15 @@
-const makeMemoryRepoAdapter = require('../../helpers/adapters/memory-repo-adapter');
+const makeConversationRepoMemoryAdapter = () => {
+  const mutations = [];
 
-const makeConversationRepoMemoryAdapter = (seedData = []) => {
-  const memoryRepoAdapter = makeMemoryRepoAdapter({
-    idField: 'conversationId',
-    seedData,
-  });
+  const saveMutation = (mutation) => {
+    mutations.push(mutation);
+  };
+
+  const findMutationsByConversationId = conversationId => mutations.filter(mutation => mutation.conversationId === conversationId);
 
   return Object.freeze({
-    insertRecord: memoryRepoAdapter.insertRecord,
-    findRecordById: memoryRepoAdapter.findRecordById,
-    updateRecord: memoryRepoAdapter.updateRecord,
-    generateId: memoryRepoAdapter.generateId,
-    findRecords: memoryRepoAdapter.findRecords,
-    countRecords: memoryRepoAdapter.countRecords,
+    saveMutation,
+    findMutationsByConversationId,
   });
 };
 

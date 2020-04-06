@@ -23,9 +23,10 @@ const validateDelete = (data) => {
   }
 };
 
-const validateType = (currentText, { data }) => {
+const validateType = (conversation, mutation) => {
+  const { data } = mutation;
   if (data.type === 'insert') {
-    validateInsert(currentText, data);
+    validateInsert(conversation.text, data);
   } else {
     validateDelete(data);
   }

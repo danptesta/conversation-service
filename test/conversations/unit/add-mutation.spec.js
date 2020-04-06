@@ -93,7 +93,7 @@ B(0, 0)INS0:'The'B(1, 0)INS3:' house'B(2, 0)INS9:' is'B(3, 0)INS12:' red.'. The 
     context('When the origin does not match current state:', function () {
       it('should throw an error', async function () {
         await rejectAddMutation({
-          command: createAddMutationCommand({ origin: { alice: 0, bob: 1 } }),
+          command: createAddMutationCommand({ origin: { alice: 0, bob: 2 } }),
           error: InvalidPropertyError,
           errorMessage: 'origin does not match current state',
         });
@@ -111,7 +111,9 @@ B(0, 0)INS0:'The'B(1, 0)INS3:' house'B(2, 0)INS9:' is'B(3, 0)INS12:' red.'. The 
     });
 
     context('When Bob inserts mutations', function () {
-      const testBobInsert = async ({ index, text, bob }) => {
+      const testBobInsert = async ({
+        index, text, bob, expected,
+      }) => {
         const command = {
           author: 'bob',
           conversationId: 'only-bob_only-insert',
@@ -127,11 +129,22 @@ B(0, 0)INS0:'The'B(1, 0)INS3:' house'B(2, 0)INS9:' is'B(3, 0)INS12:' red.'. The 
         };
 
         const result = await app.addMutation(command);
-        result.should.equal('The');
+        result.should.equal(expected, `Bob insert: index=${index}, bob=${bob}, text=[${text}]`);
       };
 
       it('should succeed', async function () {
-        await testBobInsert({ index: 0, text: 'The', bob: 0 });
+        await testBobInsert({
+          index: 0, text: 'The', bob: 1, expected: 'The',
+        });
+        await testBobInsert({
+          index: 3, text: ' house', bob: 2, expected: 'The house',
+        });
+        await testBobInsert({
+          index: 3, text: ' is', bob: 3, expected: 'The house is',
+        });
+        await testBobInsert({
+          index: 3, text: ' red.', bob: 4, expected: 'The house is red.',
+        });
       });
     });
 

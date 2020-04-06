@@ -11,7 +11,8 @@ const addMutation = async ({
     conversationId: mutation.conversationId,
     repository,
   });
-  const result = domain.addMutation({ conversation, mutation });
+  const result = domain.addMutation(conversation, mutation);
+  repository.saveMutation(mutation);
   return result.text;
 };
 
