@@ -27,7 +27,8 @@ describe('app:', function () {
     };
 
     const runTests = async (dataFile) => {
-      const tests = JSON.parse(fs.readFileSync(`test/conversations/data/${dataFile}.json`, 'utf-8'));
+      const data = JSON.parse(fs.readFileSync(`test/conversations/data/${dataFile}.json`, 'utf-8'));
+      const { tests } = data;
       for (let i = 0; i < tests.length; i += 1) {
         await testAddMutation({
           command: tests[i].mutation,

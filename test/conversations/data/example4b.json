@@ -15,7 +15,7 @@
         }
       },
       "expected": {
-        "text": "The house is green and yellow.",
+        "text": "The house is green and yellow",
         "state": {
           "alice": 2,
           "bob": 7
@@ -37,7 +37,7 @@
         }
       },
       "expected": {
-        "text": "The big house is green and yellow.",
+        "text": "The big house is green and yellow",
         "state": {
           "alice": 3,
           "bob": 7
