@@ -1,12 +1,12 @@
 const _ = require('lodash');
 const { InvalidPropertyError } = require('../../helpers/errors');
-
-const isSameOrigin = (origin1, origin2) => (origin1.alice === origin2.alice) && (origin1.bob === origin2.bob);
+const {
+  isSameOrigin,
+  getLastMutation,
+  isConflictingInsert,
+} = require('./mutation-utils');
 
 const isNewConversation = conversation => conversation.mutations.length === 0;
-
-const getLastMutation = conversation => conversation.mutations[conversation.mutations.length - 1];
-
 const hasPreviousMutation = (conversation, author) => {
   const mutation = _.find(conversation.mutations, { author });
   return mutation;
@@ -30,6 +30,7 @@ const getCurrentState = (conversation, author) => {
 };
 
 const isCurrentState = (conversation, mutation) => {
+  if (isConflictingInsert(conversation, mutation)) return true;
   const currentState = getCurrentState(conversation, mutation.author);
   return isSameOrigin(currentState, mutation.origin);
 };
@@ -40,8 +41,4 @@ const validateCurrentState = (conversation, mutation) => {
   }
 };
 
-const validateOrigin = (conversation, mutation) => {
-  validateCurrentState(conversation, mutation);
-};
-
-module.exports = validateOrigin;
+module.exports = validateCurrentState;
