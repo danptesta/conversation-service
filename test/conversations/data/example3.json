@@ -1,0 +1,48 @@
+{
+  "tests": [
+    {
+      "mutation": {
+        "author": "alice",
+        "conversationId": "examples",
+        "data": {
+          "index": 13,
+          "length": 4,
+          "type": "delete"
+        },
+        "origin": {
+          "alice": 0,
+          "bob": 6
+        }
+      },
+      "expected": {
+        "text": "The house is .",
+        "state": {
+          "alice": 1,
+          "bob": 6
+        }
+      }
+    },
+    {
+      "mutation": {
+        "author": "alice",
+        "conversationId": "examples",
+        "data": {
+          "index": 13,
+          "text": "green",
+          "type": "insert"
+        },
+        "origin": {
+          "alice": 1,
+          "bob": 6
+        }
+      },
+      "expected": {
+        "text": "The house is green.",
+        "state": {
+          "alice": 2,
+          "bob": 6
+        }
+      }
+    }
+  ]
+}

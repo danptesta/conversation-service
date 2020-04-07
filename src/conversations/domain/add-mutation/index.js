@@ -1,8 +1,9 @@
 /* eslint-disable arrow-body-style */
 const validateType = require('./validate-type');
-const makeConversation = require('./make-conversation');
+const makeConversation = require('../make-conversation');
 const validateCurrentState = require('./validate-current-state');
-const { isConflictingInsert, getLastMutation } = require('./mutation-utils');
+const isConflictingInsert = require('./is-conflicting-insert');
+const editText = require('./edit-text');
 
 const validateMutation = (conversation, mutation) => {
   validateType(conversation, mutation);
@@ -36,14 +37,25 @@ const transformMutation = (mutation, lastMutation) => {
 
 const resolveMutation = (conversation, mutation) => {
   return isConflictingInsert(conversation, mutation)
-    ? transformMutation(mutation, getLastMutation(conversation))
+    ? transformMutation(mutation, conversation.lastMutation)
     : mutation;
+};
+
+const incrementState = (conversation, mutation) => {
+  const result = { ...conversation.state };
+  result[mutation.author] += 1;
+  return result;
 };
 
 const addMutation = (conversation, mutation) => {
   validateMutation(conversation, mutation);
   const resolved = resolveMutation(conversation, mutation);
-  return makeConversation(conversation.conversationId, [...conversation.mutations, resolved]);
+  return makeConversation({
+    conversationId: conversation.conversationId,
+    text: editText(conversation.text, resolved),
+    lastMutation: resolved,
+    state: incrementState(conversation, resolved),
+  });
 };
 
 module.exports = addMutation;

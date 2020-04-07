@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 const https = require('https');
+const makeListRecords = require('./list-records');
 const makeFindRecords = require('./find-records');
 const makeCountRecords = require('./count-records');
 const makePutRecord = require('./put-record');
@@ -44,6 +45,9 @@ const makeDynamoRepoAdapter = ({
     generateId,
     findRecordById,
     updateRecord: makeUpdateRecord({ findRecordByIdUnfiltered, putRecord, idField }),
+    listRecords: makeListRecords({
+      tableName, docClient, logger, compositeIndexKeys,
+    }),
     findRecords: makeFindRecords({
       tableName, docClient, logger, compositeIndexKeys,
     }),

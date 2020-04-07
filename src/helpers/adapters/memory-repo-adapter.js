@@ -37,6 +37,8 @@ const makeMemoryRepo = ({
     return result;
   };
 
+  const listRecords = async () => records;
+
   const sortRecords = ({ matches, sort }) => {
     const { key, order } = sort[0];
     if (order === 'descending') {
@@ -64,6 +66,7 @@ const makeMemoryRepo = ({
     insertRecord,
     findRecordById,
     updateRecord,
+    listRecords,
     generateId,
     findRecords,
     countRecords,

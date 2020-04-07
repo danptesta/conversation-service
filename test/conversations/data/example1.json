@@ -1,0 +1,92 @@
+{
+  "tests": [
+    {
+      "mutation": {
+        "author": "bob",
+        "conversationId": "examples",
+        "data": {
+          "index": 0,
+          "text": "The",
+          "type": "insert"
+        },
+        "origin": {
+          "alice": 0,
+          "bob": 0
+        }
+      },
+      "expected": {
+        "text": "The",
+        "state": {
+          "alice": 0,
+          "bob": 1
+        }
+      }
+    },
+    {
+      "mutation": {
+        "author": "bob",
+        "conversationId": "examples",
+        "data": {
+          "index": 3,
+          "text": " house",
+          "type": "insert"
+        },
+        "origin": {
+          "alice": 0,
+          "bob": 1
+        }
+      },
+      "expected": {
+        "text": "The house",
+        "state": {
+          "alice": 0,
+          "bob": 2
+        }
+      }
+    },
+    {
+      "mutation": {
+        "author": "bob",
+        "conversationId": "examples",
+        "data": {
+          "index": 9,
+          "text": " is",
+          "type": "insert"
+        },
+        "origin": {
+          "alice": 0,
+          "bob": 2
+        }
+      },
+      "expected": {
+        "text": "The house is",
+        "state": {
+          "alice": 0,
+          "bob": 3
+        }
+      }
+    },
+    {
+      "mutation": {
+        "author": "bob",
+        "conversationId": "examples",
+        "data": {
+          "index": 12,
+          "text": " red.",
+          "type": "insert"
+        },
+        "origin": {
+          "alice": 0,
+          "bob": 3
+        }
+      },
+      "expected": {
+        "text": "The house is red.",
+        "state": {
+          "alice": 0,
+          "bob": 4
+        }
+      }
+    }
+  ]
+}

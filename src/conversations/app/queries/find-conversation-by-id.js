@@ -1,8 +1,6 @@
-const { makeConversation } = require('../../domain');
-
 const findConversationById = async ({ conversationId, repository }) => {
-  const mutations = await repository.findMutationsByConversationId(conversationId);
-  return makeConversation(conversationId, mutations);
+  const result = await repository.findConversationById(conversationId);
+  return result ? Object.freeze(result) : null;
 };
 
 module.exports = findConversationById;

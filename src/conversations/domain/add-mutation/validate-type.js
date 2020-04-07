@@ -1,6 +1,6 @@
-const { InvalidPropertyError } = require('../../helpers/errors');
+const { InvalidPropertyError } = require('../../../helpers/errors');
 
-const validateInsertNoLength = (data) => {
+const validateInsertFields = (data) => {
   if (data.length) {
     throw new InvalidPropertyError('length is not allowed on insert');
   }
@@ -13,7 +13,7 @@ const validateInsertIndexInRange = (currentText, data) => {
 };
 
 const validateInsert = (currentText, data) => {
-  validateInsertNoLength(data);
+  validateInsertFields(data);
   validateInsertIndexInRange(currentText, data);
 };
 

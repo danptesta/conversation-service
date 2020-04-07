@@ -9,15 +9,10 @@ module.exports = function makeRepositoryFixture() {
   });
 
   function createMemoryRepo() {
-    return makeMemoryRepository(createSeedData());
+    return makeMemoryRepository();
   }
 
   function createDynamoRepo(tableName) {
     return makeDynamoRepository(tableName);
-  }
-
-  function createSeedData() {
-    const seedData = [];
-    return seedData;
   }
 };
