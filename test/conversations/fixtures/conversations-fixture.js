@@ -22,13 +22,34 @@ const createAddMutationCommand = ({
   ...otherInfo,
 });
 
-const createAddMutationCommandWithMissingKey = (field) => {
-  const commandWithMissingField = createAddMutationCommand({});
-  delete commandWithMissingField[field];
-  return commandWithMissingField;
-};
+const createAddMutationInsertCommand = ({
+  author, conversationId, index, text, origin,
+}) => ({
+  author,
+  conversationId,
+  data: {
+    index,
+    text,
+    type: 'insert',
+  },
+  origin,
+});
+
+const createAddMutationDeleteCommand = ({
+  author, conversationId, index, length, origin,
+}) => ({
+  author,
+  conversationId,
+  data: {
+    index,
+    length,
+    type: 'delete',
+  },
+  origin,
+});
 
 module.exports = {
   createAddMutationCommand,
-  createAddMutationCommandWithMissingKey,
+  createAddMutationInsertCommand,
+  createAddMutationDeleteCommand,
 };
