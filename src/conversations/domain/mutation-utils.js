@@ -12,7 +12,7 @@ const isSameType = (mutation1, mutation2) => mutation1.data.type === mutation2.d
 const isConflicting = (lastMutation, mutation) => {
   return (!isSameAuthor(lastMutation, mutation))
     && (isSameType(lastMutation, mutation))
-    && (isSameOrigin(lastMutation, mutation));
+    && (isSameOrigin(lastMutation.origin, mutation.origin));
 };
 
 const isConflictingInsert = (conversation, mutation) => {

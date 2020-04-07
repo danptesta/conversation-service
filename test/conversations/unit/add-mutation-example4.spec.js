@@ -7,6 +7,10 @@ const {
   testAddMutationInsert,
   testAddMutationDelete,
 } = require('../helpers/test-add-mutation');
+const {
+  createAddMutationInsertCommand,
+  createAddMutationDeleteCommand,
+} = require('../fixtures/conversations-fixture');
 
 describe('app:', function () {
   let app;
@@ -34,7 +38,7 @@ describe('app:', function () {
         });
       };
 
-      it('should transform the conflicting mutations and return the correct text', async function () {
+      const addPrerequisiteMutations = async () => {
         await testExample4Insert({
           author: 'bob', index: 0, text: 'The', origin: { bob: 0, alice: 0 }, expected: 'The',
         });
@@ -59,12 +63,26 @@ describe('app:', function () {
         await testExample4Insert({
           author: 'alice', index: 13, text: 'green', origin: { bob: 6, alice: 1 }, expected: 'The house is green.',
         });
+      };
+
+      it('should transform the conflicting mutations and return the correct text', async function () {
+        await addPrerequisiteMutations();
         await testExample4Insert({
           author: 'alice', index: 3, text: ' big', origin: { bob: 6, alice: 2 }, expected: 'The big house is green.',
         });
         await testExample4Insert({
           author: 'bob', index: 18, text: ' and yellow', origin: { bob: 6, alice: 2 }, expected: 'The big house is green and yellow.',
         });
+      });
+
+      it('should transform the conflicting mutations commutatively', async function () {
+        await addPrerequisiteMutations();
+        await testExample4Insert({
+          author: 'bob', index: 18, text: ' and yellow', origin: { bob: 6, alice: 2 }, expected: 'The house is green and yellow.',
+        });
+        // await testExample4Insert({
+        //   author: 'alice', index: 3, text: ' big', origin: { bob: 6, alice: 2 }, expected: 'The big house is green and yellow.',
+        // });
       });
     });
   });
