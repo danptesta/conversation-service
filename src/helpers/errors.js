@@ -1,6 +1,6 @@
 class InvalidInputError extends Error {
   constructor(errors) {
-    super('Invalid input');
+    super('invalid input');
     this.name = 'InvalidInputError';
     this.errors = errors;
 
