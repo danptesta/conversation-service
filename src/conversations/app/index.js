@@ -1,6 +1,6 @@
 const addMutationCommand = require('./commands/add-mutation');
-const removeConversation = require('./commands/remove-conversation');
 const findConversationById = require('./queries/find-conversation-by-id');
+const removeConversation = require('./commands/remove-conversation');
 
 const makeApp = ({ repository }) => Object.freeze({
   addMutation: async command => addMutationCommand({ command, repository }),

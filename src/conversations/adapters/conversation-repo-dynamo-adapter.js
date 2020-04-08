@@ -13,6 +13,7 @@ const makeConversationRepoDynamoAdapter = (tableName = process.env.CONVERSATIONS
     findConversationById: dynamoRepoAdapter.findRecordById,
     updateConversation: dynamoRepoAdapter.updateRecord,
     listConversations: dynamoRepoAdapter.listRecords,
+    deleteConversation: dynamoRepoAdapter.deleteRecord,
   });
 };
 

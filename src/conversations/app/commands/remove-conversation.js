@@ -1,14 +1,10 @@
-const {
-  EntityNotFoundError,
-  ConversationNotFoundError,
-} = require('../../../helpers/errors');
+const { ConversationNotFoundError } = require('../../../helpers/errors');
 
 const removeConversation = async ({ conversationId, repository }) => {
   try {
-    await repository.removeConversation(conversationId);
+    await repository.deleteConversation(conversationId);
   } catch (error) {
-    if (error instanceof EntityNotFoundError) throw new ConversationNotFoundError();
-    throw error;
+    throw new ConversationNotFoundError();
   }
 };
 
