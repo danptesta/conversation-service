@@ -1,0 +1,48 @@
+{
+  "tests": [
+    {
+      "mutation": {
+        "author": "alice",
+        "conversationId": "examples",
+        "data": {
+          "index": 3,
+          "text": " big",
+          "type": "insert"
+        },
+        "origin": {
+          "alice": 2,
+          "bob": 6
+        }
+      },
+      "expected": {
+        "text": "The big house is green",
+        "state": {
+          "alice": 3,
+          "bob": 6
+        }
+      }
+    },
+    {
+      "mutation": {
+        "author": "bob",
+        "conversationId": "examples",
+        "data": {
+          "index": 18,
+          "text": " and yellow",
+          "type": "insert"
+        },
+        "origin": {
+          "alice": 2,
+          "bob": 6
+        }
+      },
+      "expected": {
+        "text": "The big house is green and yellow",
+        "state": {
+          "alice": 3,
+          "bob": 7
+        }
+      }
+    }
+  ]
+}

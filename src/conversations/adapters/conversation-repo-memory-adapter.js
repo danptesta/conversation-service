@@ -1,16 +1,17 @@
-const makeConversationRepoMemoryAdapter = () => {
-  const mutations = [];
+const makeMemoryRepoAdapter = require('../../helpers/adapters/memory-repo-adapter');
 
-  const saveMutation = (mutation) => {
-    mutations.push(mutation);
-  };
-
-  const findMutationsByConversationId = conversationId => mutations.filter(mutation => mutation.conversationId === conversationId);
+const makeMemoryMigrationRepoAdapter = () => {
+  const memoryRepoAdapter = makeMemoryRepoAdapter({
+    idField: 'conversationId',
+  });
 
   return Object.freeze({
-    saveMutation,
-    findMutationsByConversationId,
+    insertConversation: memoryRepoAdapter.insertRecord,
+    findConversationById: memoryRepoAdapter.findRecordById,
+    updateConversation: memoryRepoAdapter.updateRecord,
+    listConversations: memoryRepoAdapter.listRecords,
+    removeConversation: memoryRepoAdapter.removeRecord,
   });
 };
 
-module.exports = makeConversationRepoMemoryAdapter;
+module.exports = makeMemoryMigrationRepoAdapter;

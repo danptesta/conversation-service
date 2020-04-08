@@ -8,17 +8,11 @@ const makeConversationRepoDynamoAdapter = (tableName = process.env.CONVERSATIONS
     idField: 'conversationId',
   });
 
-  const insertRecord = async (record) => {
-    await dynamoRepoAdapter.insertRecord(record);
-  };
-
   return Object.freeze({
-    insertRecord,
-    generateId: dynamoRepoAdapter.generateId,
-    findRecordById: dynamoRepoAdapter.findRecordById,
-    updateRecord: dynamoRepoAdapter.updateRecord,
-    findRecords: dynamoRepoAdapter.findRecords,
-    countRecords: dynamoRepoAdapter.countRecords,
+    insertConversation: dynamoRepoAdapter.insertRecord,
+    findConversationById: dynamoRepoAdapter.findRecordById,
+    updateConversation: dynamoRepoAdapter.updateRecord,
+    listConversations: dynamoRepoAdapter.listRecords,
   });
 };
 

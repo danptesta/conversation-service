@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const { EntityNotFoundError } = require('../errors');
 
 const makeMemoryRepo = ({
   idField,
@@ -25,38 +26,15 @@ const makeMemoryRepo = ({
     }
   };
 
-  const generateId = () => `record${records.length + 1}`;
+  const listRecords = async () => records;
 
-  const findMatchingRecords = async (criteria) => {
-    const result = records.filter((record) => {
-      const criteriaEntries = Object.entries(criteria);
-      const matches = criteriaEntries.filter(([key, value]) => record[key] === value);
-      return matches.length === criteriaEntries.length;
-    });
-
-    return result;
-  };
-
-  const sortRecords = ({ matches, sort }) => {
-    const { key, order } = sort[0];
-    if (order === 'descending') {
-      return matches.sort((a, b) => b[key] - a[key]);
+  const removeRecord = async (id) => {
+    let index = -1;
+    for (let i = 0; i < records.length && index === -1; i += 1) {
+      if (records[i][idField] === id) index = i;
     }
-    return matches.sort((a, b) => a[key] - b[key]);
-  };
-
-  const findRecords = async ({ criteria, limit, sort }) => {
-    const matches = await findMatchingRecords(criteria);
-    const sorted = sortRecords({ matches, sort });
-    if (limit) {
-      return sorted.slice(0, limit);
-    }
-    return sorted;
-  };
-
-  const countRecords = async ({ criteria }) => {
-    const result = await findMatchingRecords(criteria);
-    return result.length;
+    if (index === -1) throw new EntityNotFoundError('entity');
+    records.splice(index, 1);
   };
 
   return Object.freeze({
@@ -64,9 +42,8 @@ const makeMemoryRepo = ({
     insertRecord,
     findRecordById,
     updateRecord,
-    generateId,
-    findRecords,
-    countRecords,
+    listRecords,
+    removeRecord,
   });
 };
 

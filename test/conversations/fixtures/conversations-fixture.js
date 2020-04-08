@@ -22,34 +22,6 @@ const createAddMutationCommand = ({
   ...otherInfo,
 });
 
-const createAddMutationInsertCommand = ({
-  author, conversationId, index, text, origin,
-}) => ({
-  author,
-  conversationId,
-  data: {
-    index,
-    text,
-    type: 'insert',
-  },
-  origin,
-});
-
-const createAddMutationDeleteCommand = ({
-  author, conversationId, index, length, origin,
-}) => ({
-  author,
-  conversationId,
-  data: {
-    index,
-    length,
-    type: 'delete',
-  },
-  origin,
-});
-
 module.exports = {
   createAddMutationCommand,
-  createAddMutationInsertCommand,
-  createAddMutationDeleteCommand,
 };

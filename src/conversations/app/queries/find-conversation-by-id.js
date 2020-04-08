@@ -1,8 +1,11 @@
-const { makeConversation } = require('../../domain');
+const {
+  ConversationNotFoundError,
+} = require('../../../helpers/errors');
 
 const findConversationById = async ({ conversationId, repository }) => {
-  const mutations = await repository.findMutationsByConversationId(conversationId);
-  return makeConversation(conversationId, mutations);
+  const result = await repository.findConversationById(conversationId);
+  if (result) return Object.freeze(result);
+  throw new ConversationNotFoundError();
 };
 
 module.exports = findConversationById;
