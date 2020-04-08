@@ -1,6 +1,11 @@
+const {
+  ConversationNotFoundError,
+} = require('../../../helpers/errors');
+
 const findConversationById = async ({ conversationId, repository }) => {
   const result = await repository.findConversationById(conversationId);
-  return result ? Object.freeze(result) : null;
+  if (result) return Object.freeze(result);
+  throw new ConversationNotFoundError();
 };
 
 module.exports = findConversationById;

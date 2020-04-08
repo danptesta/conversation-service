@@ -1,8 +1,10 @@
 const addMutationCommand = require('./commands/add-mutation');
+const findConversationById = require('./queries/find-conversation-by-id');
 
 const makeApp = ({ repository }) => Object.freeze({
   addMutation: async command => addMutationCommand({ command, repository }),
-  listConversations: () => repository.listConversations(),
+  listConversations: async () => repository.listConversations(),
+  findConversationById: async conversationId => findConversationById({ conversationId, repository }),
 });
 
 module.exports = makeApp;

@@ -1,10 +1,11 @@
-class UniqueConstraintError extends Error {
-  constructor(value) {
-    super(`${value} must be unique.`);
-    this.name = 'UniqueConstraintError';
+class InvalidInputError extends Error {
+  constructor(errors) {
+    super('Invalid input');
+    this.name = 'InvalidInputError';
+    this.errors = errors;
 
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, UniqueConstraintError);
+      Error.captureStackTrace(this, InvalidInputError);
     }
   }
 }
@@ -20,25 +21,12 @@ class InvalidPropertyError extends Error {
   }
 }
 
-class InvalidInputError extends Error {
-  constructor(errors) {
-    super('Invalid input');
-    this.name = 'InvalidInputError';
-    this.errors = errors;
+class ConversationNotFoundError extends Error {
+  constructor() {
+    super('conversation not found');
 
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, InvalidInputError);
-    }
-  }
-}
-
-class RequiredParameterError extends Error {
-  constructor(param) {
-    super(`Missing required fields: ${param}`);
-    this.name = 'RequiredParameterError';
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, RequiredParameterError);
+      Error.captureStackTrace(this, ConversationNotFoundError);
     }
   }
 }
@@ -55,9 +43,8 @@ class SystemError extends Error {
 }
 
 module.exports = {
-  UniqueConstraintError,
-  InvalidPropertyError,
   InvalidInputError,
-  RequiredParameterError,
+  InvalidPropertyError,
+  ConversationNotFoundError,
   SystemError,
 };

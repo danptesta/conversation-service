@@ -3,6 +3,7 @@
 
 const makeApp = require('../../../src/conversations/app');
 const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
+const { ConversationNotFoundError } = require('../../../src/helpers/errors');
 
 describe('app:', function () {
   let app;
@@ -12,22 +13,20 @@ describe('app:', function () {
     app = makeApp({ repository });
   });
 
-  context('When accessing app.listConversations:', function () {
+  context('When accessing app.findConversationById:', function () {
     it('should return a function', function () {
-      app.listConversations.should.be.a('function');
+      app.findConversationById.should.be.a('function');
     });
   });
 
-  describe('#listConversations():', function () {
-    context('When no conversations exist:', function () {
-      it('should return empty array', async function () {
-        const result = await app.listConversations();
-        should.exist(result);
-        result.should.be.an.array().of.length(0);
+  describe('#findConversationById():', function () {
+    context('When finding a conversation that does not exist:', function () {
+      it('should throw an error', async function () {
+        await app.findConversationById('does_not_exist').should.be.rejectedWith(ConversationNotFoundError);
       });
     });
 
-    context('When conversations exist:', function () {
+    context('When finding a conversation that exists:', function () {
       const createConversation = async conversationId => app.addMutation({
         author: 'bob',
         conversationId,
@@ -40,13 +39,11 @@ describe('app:', function () {
       });
 
       it('should return the conversations', async function () {
-        const conversation1 = await createConversation('conversation1');
-        const conversation2 = await createConversation('conversation2');
-        const result = await app.listConversations();
+        const existingId = 'existing-conversation';
+        const conversation = await createConversation(existingId);
+        const result = await app.findConversationById(existingId);
         should.exist(result);
-        result.should.be.an.array().of.length(2);
-        result[0].should.deep.equal(conversation1);
-        result[1].should.deep.equal(conversation2);
+        result.should.deep.equal(conversation, 'existing conversation');
       });
     });
   });
