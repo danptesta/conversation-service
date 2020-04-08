@@ -1,6 +1,7 @@
 /* eslint-disable prefer-arrow-callback,func-names,quote-props,
   class-methods-use-this,no-unused-expressions,global-require */
 
+const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
 const makeApp = require('../../../src/conversations/app');
 const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
 const { ConversationNotFoundError } = require('../../../src/helpers/errors');
@@ -27,22 +28,11 @@ describe('app:', function () {
     });
 
     context('When removing a conversation that exists:', function () {
-      const createConversation = async conversationId => app.addMutation({
-        author: 'bob',
-        conversationId,
-        data: {
-          index: 0,
-          text: `This is conversation ${conversationId}`,
-          type: 'insert',
-        },
-        origin: { alice: 0, bob: 0 },
-      });
-
       it('should remove the conversation', async function () {
-        const removeId = 'remove-conversation';
-        await createConversation(removeId);
-        await app.removeConversation(removeId);
-        await app.findConversationById(removeId).should.be.rejectedWith(ConversationNotFoundError);
+        const command = createAddMutationCommand({});
+        await app.addMutation(command);
+        await app.removeConversation(command.conversationId);
+        await app.findConversationById(command.conversationId).should.be.rejectedWith(ConversationNotFoundError);
       });
     });
   });

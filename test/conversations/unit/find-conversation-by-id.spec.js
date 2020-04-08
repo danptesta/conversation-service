@@ -1,6 +1,7 @@
 /* eslint-disable prefer-arrow-callback,func-names,quote-props,
   class-methods-use-this,no-unused-expressions,global-require */
 
+const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
 const makeApp = require('../../../src/conversations/app');
 const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
 const { ConversationNotFoundError } = require('../../../src/helpers/errors');
@@ -27,21 +28,10 @@ describe('app:', function () {
     });
 
     context('When finding a conversation that exists:', function () {
-      const createConversation = async conversationId => app.addMutation({
-        author: 'bob',
-        conversationId,
-        data: {
-          index: 0,
-          text: `This is conversation ${conversationId}`,
-          type: 'insert',
-        },
-        origin: { alice: 0, bob: 0 },
-      });
-
       it('should return the conversations', async function () {
-        const existingId = 'existing-conversation';
-        const conversation = await createConversation(existingId);
-        const result = await app.findConversationById(existingId);
+        const command = createAddMutationCommand({});
+        const conversation = await app.addMutation(command);
+        const result = await app.findConversationById(command.conversationId);
         should.exist(result);
         result.should.deep.equal(conversation, 'existing conversation');
       });
