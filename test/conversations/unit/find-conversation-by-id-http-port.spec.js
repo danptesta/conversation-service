@@ -46,7 +46,7 @@ describe('conversations-http-port:', function () {
 
   describe('find conversation by id (GET):', function () {
     context('When finding a conversation that does not exist:', function () {
-      it('should throw an error', async function () {
+      it('should return error', async function () {
         const response = await handle({
           path: '/conversations',
           method: 'GET',
@@ -60,7 +60,7 @@ describe('conversations-http-port:', function () {
           expectedStatusCode: 200,
           expectedBody: {
             ok: false,
-            msg: 'conversation not found.',
+            msg: 'conversation not found',
           },
         });
       });
@@ -101,7 +101,7 @@ describe('conversations-http-port:', function () {
       });
     });
 
-    context('When the app encounters an unexpected error when adding a mutation:', function () {
+    context('When the app encounters an unexpected error when finding a conversation:', function () {
       it('should return error', async function () {
         app = makeErrorApp();
         handle = makeHttpPortHandler({ app });

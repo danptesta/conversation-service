@@ -48,7 +48,7 @@ const makeConversationsHttpPortHandler = ({ app }) => {
       if (error instanceof ConversationNotFoundError) {
         return makeHttpError({
           statusCode: 200,
-          msg: 'conversation not found.',
+          msg: error.message,
         });
       }
       throw error;

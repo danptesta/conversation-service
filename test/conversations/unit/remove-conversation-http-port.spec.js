@@ -5,6 +5,7 @@
 const makeApp = require('../../../src/conversations/app');
 const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
 const assertHttpResponse = require('../helpers/assert-http-response');
+const makeErrorApp = require('./error-app');
 const makeHttpPortHandler = require('../../../src/conversations/ports/conversations-http-port');
 
 describe('conversations-http-port:', function () {
@@ -17,26 +18,29 @@ describe('conversations-http-port:', function () {
     handle = makeHttpPortHandler({ app });
   });
 
-  describe('list conversations (GET):', function () {
-    context('When no conversations exist:', function () {
-      it('should return success with empty array', async function () {
+  describe('remove conversation (DELETE):', function () {
+    context('When removing a conversation that does not exist:', function () {
+      it('should return error', async function () {
         const response = await handle({
           path: '/conversations',
-          method: 'GET',
+          method: 'DELETE',
+          pathParams: {
+            id: 'does_not_exist',
+          },
         });
 
         assertHttpResponse({
           response,
-          expectedStatusCode: 200,
+          expectedStatusCode: 204,
           expectedBody: {
-            ok: true,
-            conversations: [],
+            ok: false,
+            msg: 'conversation not found',
           },
         });
       });
     });
 
-    context('When conversations exist:', function () {
+    context('When removing a conversation that exists:', function () {
       const createConversation = async conversationId => app.addMutation({
         author: 'bob',
         conversationId,
@@ -48,21 +52,46 @@ describe('conversations-http-port:', function () {
         origin: { alice: 0, bob: 0 },
       });
 
-      it('should return the conversations', async function () {
-        const conversation1 = await createConversation('conversation1');
-        const conversation2 = await createConversation('conversation2');
+      it('should return success', async function () {
+        const removeId = 'remove-conversation';
+        await createConversation(removeId);
 
         const response = await handle({
           path: '/conversations',
-          method: 'GET',
+          method: 'DELETE',
+          pathParams: {
+            id: removeId,
+          },
         });
 
         assertHttpResponse({
           response,
-          expectedStatusCode: 200,
+          expectedStatusCode: 204,
           expectedBody: {
             ok: true,
-            conversations: [conversation1, conversation2],
+          },
+        });
+      });
+    });
+
+    context('When the app encounters an unexpected error when removing a conversation:', function () {
+      it('should return error', async function () {
+        app = makeErrorApp();
+        handle = makeHttpPortHandler({ app });
+        const response = await handle({
+          path: '/conversations',
+          method: 'DELETE',
+          pathParams: {
+            id: 'any-id',
+          },
+        });
+
+        assertHttpResponse({
+          response,
+          expectedStatusCode: 500,
+          expectedBody: {
+            ok: false,
+            msg: 'unexpected system error occured, please try again.',
           },
         });
       });
