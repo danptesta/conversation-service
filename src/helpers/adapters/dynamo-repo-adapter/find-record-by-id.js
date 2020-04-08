@@ -1,12 +1,8 @@
-const { removeDynamoControlledFields } = require('./dynamo-controlled-fields');
-const { removeCompositeIndexFields } = require('./dynamo-index-utils');
-
 const makeFindRecordById = ({
   tableName,
   docClient,
   logger,
   idField,
-  compositeIndexKeys,
 }) => {
   const findRecordByIdUnfiltered = async (id) => {
     const Key = {};
@@ -24,12 +20,7 @@ const makeFindRecordById = ({
       });
 
       if (response && response.Item) {
-        return Object.freeze(
-          removeCompositeIndexFields({
-            record: { ...response.Item },
-            compositeIndexKeys,
-          })
-        );
+        return Object.freeze({ ...response.Item });
       }
       return null;
     } catch (error) {
@@ -42,7 +33,7 @@ const makeFindRecordById = ({
 
   const findRecordById = async (id) => {
     const record = await findRecordByIdUnfiltered(id);
-    return record ? Object.freeze(removeDynamoControlledFields(record)) : null;
+    return record ? Object.freeze(record) : null;
   };
 
   return { findRecordById, findRecordByIdUnfiltered };

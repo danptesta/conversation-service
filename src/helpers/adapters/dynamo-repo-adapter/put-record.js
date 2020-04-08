@@ -1,15 +1,12 @@
-const { addCompositeIndexFields } = require('./dynamo-index-utils');
-
 const makePutRecord = ({
   tableName,
   docClient,
   logger,
-  compositeIndexKeys,
 }) => {
   const putRecord = async (method, record) => {
     const params = {
       TableName: tableName,
-      Item: addCompositeIndexFields({ record, compositeIndexKeys }),
+      Item: record,
     };
 
     const startTime = Date.now();

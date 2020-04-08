@@ -1,11 +1,7 @@
-const { removeCompositeIndexFields } = require('./dynamo-index-utils');
-const { removeDynamoControlledFields } = require('./dynamo-controlled-fields');
-
 const makeListRecords = ({
   tableName,
   docClient,
   logger,
-  compositeIndexKeys,
 }) => {
   const listRecords = async () => {
     const params = {
@@ -20,12 +16,7 @@ const makeListRecords = ({
       });
 
       if (response && response.Count > 0) {
-        return response.Items.map(record => Object.freeze(
-          removeCompositeIndexFields({
-            record: removeDynamoControlledFields(record),
-            compositeIndexKeys,
-          })
-        ));
+        return response.Items.map(record => Object.freeze(record));
       }
       return [];
     } catch (error) {
