@@ -28,7 +28,7 @@ const makeMemoryRepo = ({
 
   const listRecords = async () => records;
 
-  const removeRecord = async (id) => {
+  const deleteRecord = async (id) => {
     let index = -1;
     for (let i = 0; i < records.length && index === -1; i += 1) {
       if (records[i][idField] === id) index = i;
@@ -43,7 +43,7 @@ const makeMemoryRepo = ({
     findRecordById,
     updateRecord,
     listRecords,
-    removeRecord,
+    deleteRecord,
   });
 };
 

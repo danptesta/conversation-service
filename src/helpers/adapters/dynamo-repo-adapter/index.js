@@ -1,10 +1,11 @@
 const AWS = require('aws-sdk');
 const https = require('https');
-const makeListRecords = require('./list-records');
 const makePutRecord = require('./put-record');
 const makeInsertRecord = require('./insert-record');
 const makeFindRecordById = require('./find-record-by-id');
 const makeUpdateRecord = require('./update-record');
+const makeListRecords = require('./list-records');
+const makeDeleteRecord = require('./delete-record');
 const makeDynamoLogger = require('./dynamo-logger');
 
 const dynamo = new AWS.DynamoDB({
@@ -39,6 +40,9 @@ const makeDynamoRepoAdapter = ({
     }),
     updateRecord: makeUpdateRecord({ putRecord }),
     listRecords: makeListRecords({ tableName, docClient, logger }),
+    deleteRecord: makeDeleteRecord({
+      tableName, docClient, logger, idField,
+    }),
   });
 };
 
