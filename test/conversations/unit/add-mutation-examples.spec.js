@@ -5,10 +5,6 @@
 const fs = require('fs');
 const makeApp = require('../../../src/conversations/app');
 const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
-// const {
-//   createAddMutationInsertCommand,
-//   createAddMutationDeleteCommand,
-// } = require('../fixtures/conversations-fixture');
 
 describe('app:', function () {
   let app;

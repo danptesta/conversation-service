@@ -1,4 +1,4 @@
-const { validateJson } = require('../../../helpers/validators');
+const validateJson = require('../../../helpers/validate-json');
 const findConversationById = require('../queries/find-conversation-by-id');
 const domain = require('../../domain');
 
