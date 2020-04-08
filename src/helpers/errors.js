@@ -21,9 +21,21 @@ class InvalidPropertyError extends Error {
   }
 }
 
-class ConversationNotFoundError extends Error {
+class EntityNotFoundError extends Error {
+  constructor(entity) {
+    super(`${entity} not found`);
+    this.name = 'EntityNotFoundError';
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, EntityNotFoundError);
+    }
+  }
+}
+
+class ConversationNotFoundError extends EntityNotFoundError {
   constructor() {
-    super('conversation not found');
+    super('conversation');
+    this.name = 'ConversationNotFoundError';
 
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, ConversationNotFoundError);
@@ -45,6 +57,7 @@ class SystemError extends Error {
 module.exports = {
   InvalidInputError,
   InvalidPropertyError,
+  EntityNotFoundError,
   ConversationNotFoundError,
   SystemError,
 };

@@ -10,6 +10,7 @@ const makeMemoryMigrationRepoAdapter = () => {
     findConversationById: memoryRepoAdapter.findRecordById,
     updateConversation: memoryRepoAdapter.updateRecord,
     listConversations: memoryRepoAdapter.listRecords,
+    removeConversation: memoryRepoAdapter.removeRecord,
   });
 };
 

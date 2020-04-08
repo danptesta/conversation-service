@@ -5,7 +5,7 @@ const makeApp = require('../../../src/conversations/app');
 const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
 const { ConversationNotFoundError } = require('../../../src/helpers/errors');
 
-describe.skip('app:', function () {
+describe('app:', function () {
   let app;
 
   beforeEach(async function () {
@@ -39,10 +39,10 @@ describe.skip('app:', function () {
       });
 
       it('should remove the conversation', async function () {
-        const remove = 'remove-conversation';
-        await createConversation(remove);
-        await app.removeConversation(remove);
-        await app.findConversationById(remove).should.be.rejectedWith(ConversationNotFoundError);
+        const removeId = 'remove-conversation';
+        await createConversation(removeId);
+        await app.removeConversation(removeId);
+        await app.findConversationById(removeId).should.be.rejectedWith(ConversationNotFoundError);
       });
     });
   });
