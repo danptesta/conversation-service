@@ -6,7 +6,6 @@ const makeApp = require('../../../src/conversations/app');
 const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
 const assertHttpResponse = require('../helpers/assert-http-response');
 const makeErrorApp = require('./error-app');
-const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
 const makeHttpPortHandler = require('../../../src/conversations/ports/conversations-http-port');
 
 describe('conversations-http-port:', function () {
@@ -19,33 +18,10 @@ describe('conversations-http-port:', function () {
     handle = makeHttpPortHandler({ app });
   });
 
-  context('When instantiating the http port:', function () {
-    it('should return a function', function () {
-      handle.should.be.a('function');
-    });
-  });
-
-  context('When the request has an unsupported resource:', function () {
-    it('should return error', async function () {
-      const response = await handle({
-        path: '/unsupported',
-      });
-
-      assertHttpResponse({
-        response,
-        expectedStatusCode: 404,
-        expectedBody: {
-          ok: false,
-          msg: 'resource not found',
-        },
-      });
-    });
-  });
-
   context('When the request has an unsupported method:', function () {
     const testUnsupportedMethod = async (method) => {
       const response = await handle({
-        path: '/mutations',
+        path: '/conversations',
         method,
       });
 
@@ -54,73 +30,72 @@ describe('conversations-http-port:', function () {
         expectedStatusCode: 405,
         expectedBody: {
           ok: false,
-          msg: `${method} method not allowed on mutations.`,
+          msg: `${method} method not allowed on conversations.`,
         },
         customMessage: `unsupported method: ${method}`,
       });
     };
 
-    it('should return 405 error', async function () {
-      const unsupportedMethods = ['GET', 'DELETE', 'PUT', 'PATCH'];
+    it('should return error', async function () {
+      const unsupportedMethods = ['POST', 'PUT', 'PATCH'];
       for (const unsupportedMethod of unsupportedMethods) {
         await testUnsupportedMethod(unsupportedMethod);
       }
     });
   });
 
-  describe('add mutation (POST):', function () {
-    context('When the input format is invalid:', function () {
-      it('should return error', async function () {
+  describe('find conversation by id (GET):', function () {
+    context('When finding a conversation that does not exist:', function () {
+      it('should throw an error', async function () {
         const response = await handle({
-          path: '/mutations',
-          method: 'POST',
-          body: JSON.stringify({ conversationId: null }),
+          path: '/conversations',
+          method: 'GET',
+          pathParams: {
+            id: 'does_not_exist',
+          },
         });
 
         assertHttpResponse({
           response,
-          expectedStatusCode: 201,
+          expectedStatusCode: 200,
           expectedBody: {
             ok: false,
-            msg: 'invalid input',
+            msg: 'conversation not found.',
           },
         });
       });
     });
 
-    context('When the origin does not match current state:', function () {
-      it('should return error', async function () {
-        const response = await handle({
-          path: '/mutations',
-          method: 'POST',
-          body: JSON.stringify(createAddMutationCommand({ origin: { alice: 0, bob: 1 } })),
-        });
+    context('When finding a conversation that exists:', function () {
+      const createConversation = async conversationId => app.addMutation({
+        author: 'bob',
+        conversationId,
+        data: {
+          index: 0,
+          text: `This is conversation ${conversationId}`,
+          type: 'insert',
+        },
+        origin: { alice: 0, bob: 0 },
+      });
 
-        assertHttpResponse({
-          response,
-          expectedStatusCode: 201,
-          expectedBody: {
-            ok: false,
-            msg: 'origin does not match current state',
+      it('should return the conversations', async function () {
+        const existingId = 'existing-conversation';
+        const conversation = await createConversation(existingId);
+
+        const response = await handle({
+          path: '/conversations',
+          method: 'GET',
+          pathParams: {
+            id: existingId,
           },
         });
-      });
-    });
-
-    context('When the request is valid:', function () {
-      it('should return 201 succss:', async function () {
-        const response = await handle({
-          path: '/mutations',
-          method: 'POST',
-          body: JSON.stringify(createAddMutationCommand({})),
-        });
 
         assertHttpResponse({
           response,
-          expectedStatusCode: 201,
+          expectedStatusCode: 200,
           expectedBody: {
             ok: true,
-            text: 'hello',
+            ...conversation,
           },
         });
       });
@@ -131,9 +106,11 @@ describe('conversations-http-port:', function () {
         app = makeErrorApp();
         handle = makeHttpPortHandler({ app });
         const response = await handle({
-          path: '/mutations',
-          method: 'POST',
-          body: JSON.stringify(createAddMutationCommand({})),
+          path: '/conversations',
+          method: 'GET',
+          pathParams: {
+            id: 'any-id',
+          },
         });
 
         assertHttpResponse({

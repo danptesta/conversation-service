@@ -8,17 +8,13 @@ const headers = {
 const makeHttpSuccess = ({ statusCode, result }) => ({
   headers,
   statusCode,
-  body: JSON.stringify(result),
+  body: JSON.stringify({ ok: true, ...result }),
 });
 
-module.exports = makeHttpSuccess;
 const makeHttpError = ({ statusCode, msg }) => ({
   headers,
   statusCode,
-  body: JSON.stringify({
-    msg,
-    ok: false,
-  }),
+  body: JSON.stringify({ ok: false, msg }),
 });
 
 module.exports = { makeHttpSuccess, makeHttpError };

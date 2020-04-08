@@ -17,19 +17,15 @@ const makeConversationsHttpPortHandler = ({ app }) => {
       return makeHttpSuccess({
         statusCode: 201,
         result: {
-          ok: true,
           text: result.text,
         },
       });
     } catch (error) {
       if (error instanceof InvalidInputError
         || error instanceof InvalidPropertyError) {
-        return makeHttpSuccess({
+        return makeHttpError({
           statusCode: 201,
-          result: {
-            msg: error.message,
-            ok: false,
-          },
+          msg: error.message,
         });
       }
       throw error;
@@ -51,7 +47,7 @@ const makeConversationsHttpPortHandler = ({ app }) => {
     } catch (error) {
       if (error instanceof ConversationNotFoundError) {
         return makeHttpError({
-          statusCode: 404,
+          statusCode: 200,
           msg: 'conversation not found.',
         });
       }
@@ -67,21 +63,19 @@ const makeConversationsHttpPortHandler = ({ app }) => {
     return listConversations();
   };
 
-  const removeConversation = async (id) => {
+  const removeConversation = async (httpRequest) => {
     try {
+      const { id } = httpRequest.pathParams || {};
       await app.removeConversation(id);
       return makeHttpSuccess({
         statusCode: 204,
-        result: { ok: true },
+        result: {},
       });
     } catch (error) {
       if (error instanceof ConversationNotFoundError) {
-        return makeHttpSuccess({
+        return makeHttpError({
           statusCode: 204,
-          result: {
-            msg: 'conversation not found',
-            ok: false,
-          },
+          msg: error.message,
         });
       }
       throw error;
