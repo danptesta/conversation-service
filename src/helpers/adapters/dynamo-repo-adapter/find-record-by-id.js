@@ -4,7 +4,7 @@ const makeFindRecordById = ({
   logger,
   idField,
 }) => {
-  const findRecordByIdUnfiltered = async (id) => {
+  const findRecordById = async (id) => {
     const Key = {};
     Key[idField] = id;
     const params = {
@@ -31,12 +31,7 @@ const makeFindRecordById = ({
     }
   };
 
-  const findRecordById = async (id) => {
-    const record = await findRecordByIdUnfiltered(id);
-    return record ? Object.freeze(record) : null;
-  };
-
-  return { findRecordById, findRecordByIdUnfiltered };
+  return findRecordById;
 };
 
 module.exports = makeFindRecordById;

@@ -1,10 +1,12 @@
-const makeFindRecordById = ({
+const { EntityNotFoundError } = require('../../errors');
+
+const makeDeleteRecord = ({
   tableName,
   docClient,
   logger,
   idField,
 }) => {
-  const findRecordByIdUnfiltered = async (id) => {
+  const deleteRecord = async (id) => {
     const Key = {};
     Key[idField] = id;
     const params = {
@@ -14,29 +16,19 @@ const makeFindRecordById = ({
 
     const startTime = Date.now();
     try {
-      const response = await docClient.get(params).promise();
+      const response = await docClient.delete(params).promise();
       logger.logDynamoResponse({
-        method: 'findRecordById', startTime, params, response,
+        method: 'deleteRecord', startTime, params, response,
       });
-
-      if (response && response.Item) {
-        return Object.freeze({ ...response.Item });
-      }
-      return null;
     } catch (error) {
       logger.logDynamoError({
-        method: 'findRecordById', startTime, params, error,
+        method: 'deleteRecord', startTime, params, error,
       });
-      throw error;
+      throw new EntityNotFoundError('record');
     }
   };
 
-  const findRecordById = async (id) => {
-    const record = await findRecordByIdUnfiltered(id);
-    return record ? Object.freeze(record) : null;
-  };
-
-  return { findRecordById, findRecordByIdUnfiltered };
+  return deleteRecord;
 };
 
-module.exports = makeFindRecordById;
+module.exports = makeDeleteRecord;
