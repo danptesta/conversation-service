@@ -21,12 +21,6 @@ describe('app:', function () {
   });
 
   describe('#removeConversation():', function () {
-    context('When removing a conversation that does not exist:', function () {
-      it('should throw an error', async function () {
-        await app.removeConversation('does_not_exist').should.be.rejectedWith(ConversationNotFoundError);
-      });
-    });
-
     context('When removing a conversation that exists:', function () {
       it('should remove the conversation', async function () {
         const command = createAddMutationCommand({});

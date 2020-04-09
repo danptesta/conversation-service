@@ -69,7 +69,7 @@ const makeConversationsHttpPortHandler = ({ app }) => {
       await app.removeConversation(id);
       return makeHttpSuccess({
         statusCode: 204,
-        result: {},
+        result: { msg: 'conversation removed' },
       });
     } catch (error) {
       if (error instanceof ConversationNotFoundError) {

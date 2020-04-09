@@ -20,27 +20,6 @@ describe('conversations-http-port:', function () {
   });
 
   describe('remove conversation (DELETE):', function () {
-    context('When removing a conversation that does not exist:', function () {
-      it('should return error', async function () {
-        const response = await handle({
-          path: '/conversations',
-          method: 'DELETE',
-          pathParams: {
-            id: 'does_not_exist',
-          },
-        });
-
-        assertHttpResponse({
-          response,
-          expectedStatusCode: 204,
-          expectedBody: {
-            ok: false,
-            msg: 'conversation not found',
-          },
-        });
-      });
-    });
-
     context('When removing a conversation that exists:', function () {
       it('should return success', async function () {
         const command = createAddMutationCommand({});
@@ -59,6 +38,7 @@ describe('conversations-http-port:', function () {
           expectedStatusCode: 204,
           expectedBody: {
             ok: true,
+            msg: 'conversation removed',
           },
         });
       });
