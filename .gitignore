@@ -37,3 +37,5 @@ package-lock.json
 /.stryker-tmp/
 /reports/
 stryker.log
+
+dantesta.txt
