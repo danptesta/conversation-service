@@ -1,6 +1,6 @@
 const makeDynamoRepoAdapter = require('../../helpers/adapters/dynamo-repo-adapter');
 
-const makeConversationRepoDynamoAdapter = (tableName = process.env.CONVERSATIONS_TABLE || 'CONVERSATIONS') => {
+const makeConversationRepoDynamoAdapter = (tableName = 'conversations') => {
   const dynamoRepoAdapter = makeDynamoRepoAdapter({
     service: 'conversation',
     port: 'conversation-repo',
