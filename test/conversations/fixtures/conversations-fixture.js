@@ -5,7 +5,6 @@ const createAddMutationCommand = ({
   conversationId = `${uuidv1()}`,
   data = {
     index: 0,
-    length: undefined,
     text: 'hello',
     type: 'insert',
   },

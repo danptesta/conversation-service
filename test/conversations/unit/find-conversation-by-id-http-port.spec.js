@@ -2,6 +2,7 @@
   class-methods-use-this,no-unused-expressions,global-require,
   no-restricted-syntax, no-await-in-loop */
 
+const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
 const makeApp = require('../../../src/conversations/app');
 const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
 const assertHttpResponse = require('../helpers/assert-http-response');
@@ -67,26 +68,15 @@ describe('conversations-http-port:', function () {
     });
 
     context('When finding a conversation that exists:', function () {
-      const createConversation = async conversationId => app.addMutation({
-        author: 'bob',
-        conversationId,
-        data: {
-          index: 0,
-          text: `This is conversation ${conversationId}`,
-          type: 'insert',
-        },
-        origin: { alice: 0, bob: 0 },
-      });
-
       it('should return the conversations', async function () {
-        const existingId = 'existing-conversation';
-        const conversation = await createConversation(existingId);
+        const command = createAddMutationCommand({});
+        const conversation = await app.addMutation(command);
 
         const response = await handle({
           path: '/conversations',
           method: 'GET',
           pathParams: {
-            id: existingId,
+            id: command.conversationId,
           },
         });
 

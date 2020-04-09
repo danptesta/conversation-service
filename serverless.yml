@@ -1,0 +1,81 @@
+service: conversation-service
+
+# Keep environment specific configurations in separate files
+custom:
+  config: ${file(environment/${env:STAGE}/${env:STAGE}.json)}
+  conversationsTableName: CONVERSATIONS
+ 
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${env:STAGE}
+  region: ${self:custom.config.environment.region}
+  versionFunctions: ${self:custom.versions-${self:provider.stage}, self:custom.versions-default}
+  tracing:
+    apiGateway: true
+    lambda: true
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:Scan
+      Resource: "arn:aws:dynamodb:${self:custom.config.environment.region}:${self:custom.config.environment.account}:table/${self:provider.environment.CONVERSATIONS_TABLE}"
+    - Effect: "Allow"
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+      Resource: '*'      
+
+  environment:
+    STAGE: ${self:provider.stage}
+    AWS_ACCT: ${self:custom.config.environment.account}
+    CONVERSATIONS_TABLE: ${self:custom.conversationsTableName}
+
+package:
+  exclude:
+    - ./**
+    - '!node_modules/**'
+  include:
+    - src/**
+    - environment/**
+
+functions:
+  conversations_api:
+    handler: src/conversations/adapters/conversations-http-lambda-adapter.handle
+    description: Facilitate collaborative conversation editing between Alice and Bob.
+    memorySize: 128
+    timeout: 30
+    reservedConcurrency: 10
+    # vpc:
+    #   securityGroupIds:
+    #     - ${self:custom.config.environment.securityGroup}
+    #   subnetIds:
+    #     - ${self:custom.config.environment.subnetApp1}
+    #     - ${self:custom.config.environment.subnetApp2}
+    events:
+      - http:
+          path: mutations # add a mutation
+          method: POST
+      - http:
+          path: conversations/{id} # find conversation details by id
+          method: GET
+          cors: true
+      - http:
+          path: conversations # find conversations
+          method: GET
+          cors: true
+
+resources:
+  Resources:
+    ConversationsDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: ${self:provider.environment.CONVERSATIONS_TABLE}"
+        AttributeDefinitions:
+          - AttributeName: "conversationId"
+            AttributeType: "S"   
+        KeySchema:
+          - AttributeName: "conversationId"
+            KeyType: "HASH"
+        BillingMode: PAY_PER_REQUEST

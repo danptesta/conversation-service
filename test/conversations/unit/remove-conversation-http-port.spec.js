@@ -2,6 +2,7 @@
   class-methods-use-this,no-unused-expressions,global-require,
   no-restricted-syntax, no-await-in-loop */
 
+const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
 const makeApp = require('../../../src/conversations/app');
 const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
 const assertHttpResponse = require('../helpers/assert-http-response');
@@ -41,26 +42,15 @@ describe('conversations-http-port:', function () {
     });
 
     context('When removing a conversation that exists:', function () {
-      const createConversation = async conversationId => app.addMutation({
-        author: 'bob',
-        conversationId,
-        data: {
-          index: 0,
-          text: `This is conversation ${conversationId}`,
-          type: 'insert',
-        },
-        origin: { alice: 0, bob: 0 },
-      });
-
       it('should return success', async function () {
-        const removeId = 'remove-conversation';
-        await createConversation(removeId);
+        const command = createAddMutationCommand({});
+        await app.addMutation(command);
 
         const response = await handle({
           path: '/conversations',
           method: 'DELETE',
           pathParams: {
-            id: removeId,
+            id: command.conversationId,
           },
         });
 
