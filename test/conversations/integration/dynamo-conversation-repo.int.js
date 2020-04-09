@@ -1,6 +1,7 @@
 /* eslint-disable prefer-arrow-callback,func-names,quote-props,
   class-methods-use-this,no-unused-expressions,global-require */
 
+const _ = require('lodash');
 const testExample = require('../helpers/test-example');
 const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
 const makeApp = require('../../../src/conversations/app');
@@ -18,7 +19,7 @@ describe('app (conversation-repo-dynamo-adapter integration):', function () {
 
   before(async function () {
     await createTestTable(tableName);
-    const repository = repositoryFixture.createDynamoMigrationRepo(tableName);
+    const repository = repositoryFixture.createDynamoRepo(tableName);
     app = makeApp({ repository });
   });
 
@@ -39,7 +40,7 @@ describe('app (conversation-repo-dynamo-adapter integration):', function () {
   });
 
   context('When finding a conversation by id that exists:', function () {
-    it('should return the migration', async function () {
+    it('should return the conversation', async function () {
       const conversation = await app.addMutation(createAddMutationCommand({}));
       // dynamodb reads are eventually consistent (usually within 10ms)
       await sleep(100);
@@ -51,15 +52,15 @@ describe('app (conversation-repo-dynamo-adapter integration):', function () {
 
   context('When listing conversations:', function () {
     it('should return the conversations', async function () {
-      const conversation1 = await app.addMutation(createAddMutationCommand({}));
-      const conversation2 = await app.addMutation(createAddMutationCommand({}));
+      const conversation = await app.addMutation(createAddMutationCommand({}));
       // dynamodb reads are eventually consistent (usually within 10ms)
       await sleep(100);
       const result = await app.listConversations();
       should.exist(result);
-      result.should.be.an.array().of.length(2);
-      result[0].should.deep.equal(conversation1);
-      result[1].should.deep.equal(conversation2);
+      result.should.be.an.array();
+      const found = _.find(result, { conversationId: conversation.conversationId });
+      should.exist(found);
+      found.should.deep.equal(conversation);
     });
   });
 
