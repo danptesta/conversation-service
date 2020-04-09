@@ -1,5 +1,3 @@
-const { EntityNotFoundError } = require('../../errors');
-
 const makeDeleteRecord = ({
   tableName,
   docClient,
@@ -24,7 +22,7 @@ const makeDeleteRecord = ({
       logger.logDynamoError({
         method: 'deleteRecord', startTime, params, error,
       });
-      throw new EntityNotFoundError('record');
+      throw error;
     }
   };
 

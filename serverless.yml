@@ -10,22 +10,14 @@ provider:
   runtime: nodejs12.x
   stage: ${env:STAGE}
   region: ${self:custom.config.environment.region}
-  versionFunctions: ${self:custom.versions-${self:provider.stage}, self:custom.versions-default}
-  tracing:
-    apiGateway: true
-    lambda: true
   iamRoleStatements:
     - Effect: "Allow"
       Action:
+        - dynamodb:DeleteItem
         - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:Scan
       Resource: "arn:aws:dynamodb:${self:custom.config.environment.region}:${self:custom.config.environment.account}:table/${self:provider.environment.CONVERSATIONS_TABLE}"
-    - Effect: "Allow"
-      Action:
-        - xray:PutTraceSegments
-        - xray:PutTelemetryRecords
-      Resource: '*'      
 
   environment:
     STAGE: ${self:provider.stage}
@@ -39,6 +31,7 @@ package:
   include:
     - src/**
     - environment/**
+    - schemas/**
 
 functions:
   conversations_api:
@@ -65,13 +58,17 @@ functions:
           path: conversations # find conversations
           method: GET
           cors: true
+      - http:
+          path: conversations/{id} # remove conversation
+          method: DELETE
+          cors: true
 
 resources:
   Resources:
     ConversationsDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       Properties:
-        TableName: ${self:provider.environment.CONVERSATIONS_TABLE}"
+        TableName: ${self:provider.environment.CONVERSATIONS_TABLE}
         AttributeDefinitions:
           - AttributeName: "conversationId"
             AttributeType: "S"   
