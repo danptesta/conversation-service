@@ -40,7 +40,7 @@ Sample Response (200):
 #### Add Mutation - Delete ####
 URL: `POST /mutations`
 
-ample Request:
+Sample Request:
 ```json
 {
   "author": "alice",
