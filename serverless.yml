@@ -1,28 +1,19 @@
-service: conversation-service
+service: conversations
 
-# Keep environment specific configurations in separate files
-custom:
-  config: ${file(environment/${env:STAGE}/${env:STAGE}.json)}
-  conversationsTableName: CONVERSATIONS
- 
+plugins:
+  - serverless-pseudo-parameters
+
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: ${env:STAGE}
-  region: ${self:custom.config.environment.region}
   iamRoleStatements:
-    - Effect: "Allow"
+    - Effect: Allow
       Action:
         - dynamodb:DeleteItem
         - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:Scan
-      Resource: "arn:aws:dynamodb:${self:custom.config.environment.region}:${self:custom.config.environment.account}:table/${self:provider.environment.CONVERSATIONS_TABLE}"
-
-  environment:
-    STAGE: ${self:provider.stage}
-    AWS_ACCT: ${self:custom.config.environment.account}
-    CONVERSATIONS_TABLE: ${self:custom.conversationsTableName}
+      Resource: arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/conversations
 
 package:
   exclude:
@@ -40,12 +31,6 @@ functions:
     memorySize: 128
     timeout: 30
     reservedConcurrency: 10
-    # vpc:
-    #   securityGroupIds:
-    #     - ${self:custom.config.environment.securityGroup}
-    #   subnetIds:
-    #     - ${self:custom.config.environment.subnetApp1}
-    #     - ${self:custom.config.environment.subnetApp2}
     events:
       - http:
           path: mutations # add a mutation
@@ -68,7 +53,7 @@ resources:
     ConversationsDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       Properties:
-        TableName: ${self:provider.environment.CONVERSATIONS_TABLE}
+        TableName: conversations
         AttributeDefinitions:
           - AttributeName: "conversationId"
             AttributeType: "S"   

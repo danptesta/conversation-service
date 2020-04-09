@@ -1,9 +1,0 @@
-{
-  "environment": {
-    "account": "861919308374",
-    "region": "us-west-2",
-    "securityGroup": "sg-0d119ea2eddf52627",
-    "subnetApp1": "subnet-00265276ed3ebfc20",
-    "subnetApp2": "subnet-0797e31303a278a31"
-  }
-}
