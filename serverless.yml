@@ -25,6 +25,26 @@ package:
     - schemas/**
 
 functions:
+  ping:
+    handler: src/ping.handle
+    memorySize: 128
+    timeout: 30
+    reservedConcurrency: 10
+    events:
+      - http:
+          path: ping
+          method: GET
+          cors: true
+  info:
+    handler: src/info.handle
+    memorySize: 128
+    timeout: 30
+    reservedConcurrency: 10
+    events:
+      - http:
+          path: info
+          method: GET
+          cors: true
   conversations_api:
     handler: src/conversations/adapters/conversations-http-lambda-adapter.handle
     description: Facilitate collaborative conversation editing between Alice and Bob.
