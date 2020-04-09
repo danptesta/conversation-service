@@ -1,7 +1,7 @@
 const {
   makeHttpError,
   makeHttpSuccess,
-} = require('./http-response');
+} = require('../../../helpers/http-response');
 const {
   InvalidInputError,
   InvalidPropertyError,
