@@ -1,8 +1,7 @@
 const createExpectedResponse = (expectedStatusCode, expectedBody) => JSON.stringify({
   headers: {
     'Content-Type': 'application/json',
-    // todo: 'Access-Control-Allow-Origin': 'https://app.ava.me',
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': 'https://app.ava.me',
     'Access-Control-Allow-Credentials': true,
   },
   statusCode: expectedStatusCode,

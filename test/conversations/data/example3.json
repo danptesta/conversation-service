@@ -15,11 +15,7 @@
         }
       },
       "expected": {
-        "text": "The house is ",
-        "state": {
-          "alice": 1,
-          "bob": 6
-        }
+        "text": "The house is "
       }
     },
     {
@@ -37,11 +33,7 @@
         }
       },
       "expected": {
-        "text": "The house is green",
-        "state": {
-          "alice": 2,
-          "bob": 6
-        }
+        "text": "The house is green"
       }
     }
   ]
