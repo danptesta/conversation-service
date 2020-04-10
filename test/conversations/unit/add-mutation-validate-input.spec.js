@@ -30,7 +30,7 @@ describe('app:', function () {
   });
 
   describe('#addMutation() - validate input:', function () {
-    context('When the input format is invalid:', function () {
+    context('When the input schema is invalid:', function () {
       const rejectInvalidInput = async (invalidInput, customMessage) => {
         const command = createAddMutationCommand({});
         await rejectAddMutation({
@@ -45,7 +45,7 @@ describe('app:', function () {
         await rejectInvalidInput({ conversationId: undefined });
         await rejectInvalidInput({ conversationId: 1 }, 'must be a string');
         await rejectInvalidInput({ conversationId: 'x y' }, 'no space allowed');
-        await rejectInvalidInput({ conversationId: 'xx' }, 'must be >= 3 chars');
+        await rejectInvalidInput({ conversationId: 'x' }, 'must be >= 2 chars');
         await rejectInvalidInput({ author: 'dan' }, 'must be alice or bob');
         await rejectInvalidInput({ invalidField: 'xyz' }, 'field not allowed');
         // etc, etc, many possible permutations of invalid input

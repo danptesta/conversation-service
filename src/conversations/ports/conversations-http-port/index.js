@@ -8,6 +8,12 @@ const {
   ConversationNotFoundError,
 } = require('../../../helpers/errors');
 
+const transform = ({ conversationId, lastMutation, text }) => ({
+  id: conversationId,
+  lastMutation,
+  text,
+});
+
 const makeConversationsHttpPortHandler = ({ app }) => {
   const addMutation = async (httpRequest) => {
     try {
@@ -36,14 +42,14 @@ const makeConversationsHttpPortHandler = ({ app }) => {
     const result = await app.listConversations();
     return makeHttpSuccess({
       statusCode: 200,
-      result: { conversations: result },
+      result: { conversations: result.map(transform) },
     });
   };
 
   const findConversationById = async (id) => {
     try {
       const result = await app.findConversationById(id);
-      return makeHttpSuccess({ statusCode: 200, result });
+      return makeHttpSuccess({ statusCode: 200, result: transform(result) });
     } catch (error) {
       if (error instanceof ConversationNotFoundError) {
         return makeHttpError({
