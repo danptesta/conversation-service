@@ -55,6 +55,7 @@ functions:
       - http:
           path: mutations # add a mutation
           method: POST
+          cors: true
       - http:
           path: conversations/{id} # find conversation details by id
           method: GET

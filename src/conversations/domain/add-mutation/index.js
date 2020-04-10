@@ -1,13 +1,13 @@
 /* eslint-disable arrow-body-style */
 const validateType = require('./validate-type');
 const makeConversation = require('../make-conversation');
-const validateCurrentState = require('./validate-current-state');
-const isConflictingInsert = require('./is-conflicting-insert');
+const validateState = require('./validate-state');
+const { isConflictingInsert } = require('./state');
 const editText = require('./edit-text');
 
 const validateMutation = (conversation, mutation) => {
   validateType(conversation, mutation);
-  validateCurrentState(conversation, mutation);
+  validateState(conversation, mutation);
 };
 
 const transformOrigin = (lastMutation) => {
@@ -41,12 +41,6 @@ const resolveMutation = (conversation, mutation) => {
     : mutation;
 };
 
-const incrementState = (conversation, mutation) => {
-  const result = { ...conversation.state };
-  result[mutation.author] += 1;
-  return result;
-};
-
 const addMutation = (conversation, mutation) => {
   validateMutation(conversation, mutation);
   const resolved = resolveMutation(conversation, mutation);
@@ -54,7 +48,6 @@ const addMutation = (conversation, mutation) => {
     conversationId: conversation.conversationId,
     text: editText(conversation.text, resolved),
     lastMutation: resolved,
-    state: incrementState(conversation, resolved),
   });
 };
 

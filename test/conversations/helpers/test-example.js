@@ -5,7 +5,6 @@ const testAddMutation = async ({ app, command, expected }) => {
   const result = await app.addMutation(command);
   result.conversationId.should.equal(command.conversationId, 'conversationId');
   result.text.should.equal(expected.text, `text, command = ${JSON.stringify(command)}`);
-  result.state.should.deep.equal(expected.state, `state, command = ${JSON.stringify(command)}`);
 };
 
 const testExample = async (app, example) => {

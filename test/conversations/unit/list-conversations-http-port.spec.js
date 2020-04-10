@@ -38,6 +38,12 @@ describe('conversations-http-port:', function () {
     });
 
     context('When conversations exist:', function () {
+      const transform = ({ conversationId, lastMutation, text }) => ({
+        id: conversationId,
+        lastMutation,
+        text,
+      });
+
       it('should return the conversations', async function () {
         const conversation1 = await app.addMutation(createAddMutationCommand({}));
         const conversation2 = await app.addMutation(createAddMutationCommand({}));
@@ -52,7 +58,7 @@ describe('conversations-http-port:', function () {
           expectedStatusCode: 200,
           expectedBody: {
             ok: true,
-            conversations: [conversation1, conversation2],
+            conversations: [conversation1, conversation2].map(transform),
           },
         });
       });

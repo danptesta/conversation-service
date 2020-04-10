@@ -1,4 +1,4 @@
-const validateJson = require('../../../helpers/validate-json');
+const validateSchema = require('../../../helpers/validate-schema');
 const findConversationById = require('../queries/find-conversation-by-id');
 const domain = require('../../domain');
 const {
@@ -23,7 +23,7 @@ const addMutation = async ({
   repository,
 }) => {
   try {
-    validateJson({ schemaName: 'add-mutation', data: mutation });
+    validateSchema({ schemaName: 'add-mutation', data: mutation });
     const conversation = await findConversationById({
       conversationId: mutation.conversationId,
       repository,
