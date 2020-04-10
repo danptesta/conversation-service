@@ -35,6 +35,10 @@ functions:
           path: ping
           method: GET
           cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:#{AWS::Region}:#{AWS::AccountId}:userpool/conversaton-user-pool-${opt:stage, self:provider.stage}
+            scopes:
+              - conversations/ping
   info:
     handler: src/info.handle
     memorySize: 128
@@ -45,6 +49,10 @@ functions:
           path: info
           method: GET
           cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:#{AWS::Region}:#{AWS::AccountId}:userpool/conversaton-user-pool-${opt:stage, self:provider.stage}
+            scopes:
+              - conversations/info
   conversations_api:
     handler: src/conversations/adapters/conversations-http-lambda-adapter.handle
     description: Facilitate collaborative conversation editing between Alice and Bob.
@@ -55,18 +63,34 @@ functions:
       - http:
           path: mutations # add a mutation
           method: POST
+          authorizer:
+            arn: arn:aws:cognito-idp:#{AWS::Region}:#{AWS::AccountId}:userpool/conversaton-user-pool-${opt:stage, self:provider.stage}
+            scopes:
+              - conversations/add-mutation
       - http:
           path: conversations/{id} # find conversation details by id
           method: GET
           cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:#{AWS::Region}:#{AWS::AccountId}:userpool/conversaton-user-pool-${opt:stage, self:provider.stage}
+            scopes:
+              - conversations/get-conversation
       - http:
           path: conversations # find conversations
           method: GET
           cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:#{AWS::Region}:#{AWS::AccountId}:userpool/conversaton-user-pool-${opt:stage, self:provider.stage}
+            scopes:
+              - conversations/list-conversations
       - http:
           path: conversations/{id} # remove conversation
           method: DELETE
           cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:#{AWS::Region}:#{AWS::AccountId}:userpool/conversaton-user-pool-${opt:stage, self:provider.stage}
+            scopes:
+              - conversations/remove-conversation
 
 resources:
   Resources:
@@ -81,3 +105,60 @@ resources:
           - AttributeName: "conversationId"
             KeyType: "HASH"
         BillingMode: PAY_PER_REQUEST
+    http:
+      DependsOn: conversationUserPool
+    conversationUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: conversaton-user-pool-${opt:stage, self:provider.stage}
+    conversationUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: conversaton-user-pool-client-${opt:stage, self:provider.stage}
+        AllowedOAuthFlows:
+          - client_credentials
+        AllowedOAuthFlowsUserPoolClient: true
+        AllowedOAuthScopes:
+          - conversations/add-mutation
+          - conversations/get-conversation
+          - conversations/list-conversation
+          - conversations/remove-conversation
+          - conversations/ping
+          - conversations/info
+        UserPoolId:
+          Ref: conversationUserPool
+        GenerateSecret: true
+        SupportedIdentityProviders: 
+          - COGNITO
+    conversationUserPoolDomain:
+      Type: AWS::Cognito::UserPoolDomain 
+      Properties:
+        UserPoolId: 
+          Ref: conversationUserPool
+        Domain: conversaton-user-pool-domain-${opt:stage, self:provider.stage}-${self:provider.environment.DOMAIN_SUFFIX}
+    conversationUserPoolResourceServer
+      Type: AWS::Cognito::UserPoolResourceServer
+      Properties: 
+        Identifier: conversations
+        Name: conversations
+        Scopes: 
+          - ResourceServerScopeType:
+              ScopeDescription: add-mutation
+              ScopeName: add-mutation
+          - ResourceServerScopeType:
+              ScopeDescription: get-conversation
+              ScopeName: get-conversation
+          - ResourceServerScopeType:
+              ScopeDescription: list-conversations
+              ScopeName: list-conversations
+          - ResourceServerScopeType:
+              ScopeDescription: remove-conversation
+              ScopeName: remove-conversation
+          - ResourceServerScopeType:
+              ScopeDescription: ping
+              ScopeName: ping
+          - ResourceServerScopeType:
+              ScopeDescription: info
+              ScopeName: info
+        UserPoolId:
+          Ref: conversationUserPool
