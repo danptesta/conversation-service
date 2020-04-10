@@ -68,9 +68,16 @@ describe('conversations-http-port:', function () {
     });
 
     context('When finding a conversation that exists:', function () {
+      const transform = ({ conversationId, lastMutation, text }) => ({
+        id: conversationId,
+        lastMutation,
+        text,
+      });
+
       it('should return the conversations', async function () {
         const command = createAddMutationCommand({});
         const conversation = await app.addMutation(command);
+        const expected = transform(conversation);
 
         const response = await handle({
           path: '/conversations',
@@ -85,7 +92,7 @@ describe('conversations-http-port:', function () {
           expectedStatusCode: 200,
           expectedBody: {
             ok: true,
-            ...conversation,
+            ...expected,
           },
         });
       });

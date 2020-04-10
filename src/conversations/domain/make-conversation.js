@@ -4,8 +4,8 @@ const makeConversation = ({
   lastMutation = null,
 }) => ({
   conversationId,
-  text,
   lastMutation,
+  text,
 });
 
 module.exports = makeConversation;

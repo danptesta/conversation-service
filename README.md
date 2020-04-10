@@ -66,14 +66,13 @@ Sample Response (200):
 ```
 
 #### Find Conversation By Id ###
-URL: `GET /conversations/{conversationId}`
+URL: `GET /conversations/{id}`
 
 Sample Response (200):
 ```json
 {
     "ok": true,
-    "text": "hello",
-    "conversationId": "dan1",
+    "id": "dan1",
     "lastMutation": {
         "data": {
             "length": 6,
@@ -87,10 +86,7 @@ Sample Response (200):
             "alice": 0
         }
     },
-    "state": {
-        "bob": 1,
-        "alice": 1
-    }
+    "text": "hello"
 }
 ```
 
@@ -103,8 +99,7 @@ Sample Response:
     "ok": true,
     "conversations": [
         {
-            "text": "hello",
-            "conversationId": "greeting",
+            "id": "greeting",
             "lastMutation": {
                 "data": {
                     "length": 6,
@@ -118,17 +113,14 @@ Sample Response:
                     "alice": 0
                 }
             },
-            "state": {
-                "bob": 1,
-                "alice": 1
-            }
+            "text": "hello"
         }
     ]
 }
 ```
 
 #### Remove Conversation ####
-URL: `DELETE /conversations/{conversationId}`
+URL: `DELETE /conversations/{id}`
 
 Sample Response:
 This URL always responds with a 204 status code and no body, regardless of whether the given conversation exists (idempotent).
