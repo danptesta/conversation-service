@@ -21,7 +21,6 @@ package:
     - '!node_modules/**'
   include:
     - src/**
-    - environment/**
     - schemas/**
 
 functions:
@@ -35,6 +34,10 @@ functions:
           path: ping
           method: GET
           cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:us-east-1:861919308374:userpool/us-east-1_QVMqNDMo7
+            scopes:
+              - conversations/ping
   info:
     handler: src/info.handle
     memorySize: 128
@@ -45,6 +48,10 @@ functions:
           path: info
           method: GET
           cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:us-east-1:861919308374:userpool/us-east-1_QVMqNDMo7
+            scopes:
+              - conversations/info
   conversations_api:
     handler: src/conversations/adapters/conversations-http-lambda-adapter.handle
     description: Facilitate collaborative conversation editing between Alice and Bob.
@@ -55,19 +62,35 @@ functions:
       - http:
           path: mutations # add a mutation
           method: POST
+          authorizer:
+            arn: arn:aws:cognito-idp:us-east-1:861919308374:userpool/us-east-1_QVMqNDMo7
+            scopes:
+              - conversations/add-mutation
           cors: true
       - http:
           path: conversations/{id} # find conversation details by id
           method: GET
           cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:us-east-1:861919308374:userpool/us-east-1_QVMqNDMo7
+            scopes:
+              - conversations/get-conversation
       - http:
           path: conversations # find conversations
           method: GET
           cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:us-east-1:861919308374:userpool/us-east-1_QVMqNDMo7
+            scopes:
+              - conversations/list-conversations
       - http:
           path: conversations/{id} # remove conversation
           method: DELETE
           cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:us-east-1:861919308374:userpool/us-east-1_QVMqNDMo7
+            scopes:
+              - conversations/remove-conversation
 
 resources:
   Resources:
