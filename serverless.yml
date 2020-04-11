@@ -21,7 +21,6 @@ package:
     - '!node_modules/**'
   include:
     - src/**
-    - environment/**
     - schemas/**
 
 functions:
@@ -38,7 +37,7 @@ functions:
           authorizer:
             arn: arn:aws:cognito-idp:us-east-1:861919308374:userpool/us-east-1_QVMqNDMo7
             scopes:
-              - ping/ping
+              - conversations/ping
   info:
     handler: src/info.handle
     memorySize: 128
@@ -52,7 +51,7 @@ functions:
           authorizer:
             arn: arn:aws:cognito-idp:us-east-1:861919308374:userpool/us-east-1_QVMqNDMo7
             scopes:
-              - info/info
+              - conversations/info
   conversations_api:
     handler: src/conversations/adapters/conversations-http-lambda-adapter.handle
     description: Facilitate collaborative conversation editing between Alice and Bob.
@@ -66,7 +65,7 @@ functions:
           authorizer:
             arn: arn:aws:cognito-idp:us-east-1:861919308374:userpool/us-east-1_QVMqNDMo7
             scopes:
-              - mutations/add-mutation
+              - conversations/add-mutation
           cors: true
       - http:
           path: conversations/{id} # find conversation details by id

@@ -1,12 +1,12 @@
 const {
   makeHttpError,
   makeHttpSuccess,
-} = require('../../../helpers/http-response');
+} = require('../../helpers/http-response');
 const {
   InvalidInputError,
   InvalidPropertyError,
   ConversationNotFoundError,
-} = require('../../../helpers/errors');
+} = require('../../helpers/errors');
 
 const transform = ({ conversationId, lastMutation, text }) => ({
   id: conversationId,
