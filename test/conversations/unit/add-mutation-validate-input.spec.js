@@ -9,7 +9,7 @@ const {
   InvalidInputError,
 } = require('../../../src/helpers/errors');
 
-describe.only('app:', function () {
+describe('app:', function () {
   let app;
 
   beforeEach(async function () {

@@ -15,7 +15,11 @@
         }
       },
       "expected": {
-        "text": "The"
+        "text": "The",
+        "state": {
+          "alice": 0,
+          "bob": 1
+        }
       }
     },
     {
@@ -33,7 +37,11 @@
         }
       },
       "expected": {
-        "text": "The house"
+        "text": "The house",
+        "state": {
+          "alice": 0,
+          "bob": 2
+        }
       }
     },
     {
@@ -51,7 +59,11 @@
         }
       },
       "expected": {
-        "text": "The house is"
+        "text": "The house is",
+        "state": {
+          "alice": 0,
+          "bob": 3
+        }
       }
     },
     {
@@ -69,7 +81,11 @@
         }
       },
       "expected": {
-        "text": "The house is red."
+        "text": "The house is red.",
+        "state": {
+          "alice": 0,
+          "bob": 4
+        }
       }
     }
   ]

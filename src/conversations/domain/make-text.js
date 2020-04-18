@@ -20,8 +20,8 @@ const editText = (text, mutation) => {
   return deleteText(text, data);
 };
 
-const makeText = ({ mutations, resolved }) => {
-  return [resolved, ...mutations].reduce(editText, '');
+const makeText = (mutations) => {
+  return mutations.reduce(editText, '');
 };
 
 module.exports = makeText;

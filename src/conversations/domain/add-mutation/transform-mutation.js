@@ -1,4 +1,5 @@
 /* eslint-disable arrow-body-style */
+const getState = require('./get-state');
 
 const transformDataInsertInsert = ({ mutation, conflict }) => {
   const result = { ...mutation.data };
@@ -8,8 +9,13 @@ const transformDataInsertInsert = ({ mutation, conflict }) => {
   return result;
 };
 
-// const transformDataInsertDelete = ({ mutation, conflict }) => {
-// };
+const transformDataDeleteInsert = ({ mutation, conflict }) => {
+  const result = { ...mutation.data };
+  if (conflict.data.index <= result.index) {
+    result.index += conflict.data.text.length;
+  }
+  return result;
+};
 
 // const transformDataDeleteInsert = ({ mutation, conflict }) => {
 // };
@@ -17,26 +23,20 @@ const transformDataInsertInsert = ({ mutation, conflict }) => {
 // const transformDataDeleteDelete = ({ mutation, conflict }) => {
 // };
 
-// const isInsert = mutation => mutation.data.type === 'insert';
+const isInsert = mutation => mutation.data.type === 'insert';
 // const isDelete = mutation => mutation.data.type === 'delete';
 
 const transformData = ({ mutation, conflict }) => {
-  // if (isInsert(mutation) && isInsert(conflict)) {
-  return transformDataInsertInsert({ mutation, conflict });
-  // }
+  if (isInsert(mutation) && isInsert(conflict)) {
+    return transformDataInsertInsert({ mutation, conflict });
+  }
   // if (isInsert(mutation) && isDelete(conflict)) {
-  //   return transformDataInsertDelete({ mutation, conflict });
+  // return transformDataInsertDelete({ mutation, conflict });
   // }
   // if (isDelete(mutation) && isInsert(conflict)) {
-  //   return transformDataDeleteInsert({ mutation, conflict });
+  return transformDataDeleteInsert({ mutation, conflict });
   // }
   // return transformDataDeleteDelete({ mutation, conflict });
-};
-
-const getState = ({ author, origin }) => {
-  const result = { ...origin };
-  result[author] += 1;
-  return result;
 };
 
 const transformMutation = (mutation, conflict) => {

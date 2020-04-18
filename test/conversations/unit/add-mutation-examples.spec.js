@@ -6,7 +6,7 @@ const makeApp = require('../../../src/conversations/app');
 const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
 const testAddMutations = require('../helpers/test-add-mutations');
 
-describe('app:', function () {
+describe.only('app:', function () {
   let app;
 
   beforeEach(async function () {
@@ -46,7 +46,7 @@ describe('app:', function () {
     });
 
     context('Example 4b - insert mutations from Bob and Alice, with conflicts reversed:', function () {
-      it('should return the exected results (commutative)', async function () {
+      it('should return the expected results (commutative)', async function () {
         await testAddMutations(app, 'example1');
         await testAddMutations(app, 'example2');
         await testAddMutations(app, 'example3');
@@ -54,9 +54,15 @@ describe('app:', function () {
       });
     });
 
-    context.skip('When there are delete conflicts:', function () {
-      it('should return the exected results', async function () {
-        await testAddMutations(app, 'delete-conflict');
+    context('When there is delete-insert conflict with origin shift only:', function () {
+      it('should return the expected results', async function () {
+        await testAddMutations(app, 'conflict-delete-insert1');
+      });
+    });
+
+    context('When there is delete-insert conflict with origin and data shift:', function () {
+      it('should return the expected results', async function () {
+        await testAddMutations(app, 'conflict-delete-insert2');
       });
     });
   });
