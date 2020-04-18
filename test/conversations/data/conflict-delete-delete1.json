@@ -1,0 +1,150 @@
+{
+  "description": "add delete mutation that conflicts with delete",
+  "expectedTransformation": "origin shifted, data shifted (index and length)",
+  "tests": [
+    {
+      "mutation": {
+        "author": "bob",
+        "conversationId": "conflict-delete-delete1",
+        "data": {
+          "type": "insert",
+          "index": 0,
+          "text": "The"
+        },
+        "origin": {
+          "bob": 0,
+          "alice": 0
+        }
+      },
+      "expected": {
+        "text": "The",
+        "state": {
+          "bob": 1,
+          "alice": 0
+        },
+        "transformation": {
+          "origin": null,
+          "data": null,
+          "notes": "no conflicts, no transformation"
+        }
+      }
+    },
+    {
+      "mutation": {
+        "author": "bob",
+        "conversationId": "conflict-delete-delete1",
+        "data": {
+          "type": "insert",
+          "index": 3,
+          "text": " house"
+        },
+        "origin": {
+          "bob": 1,
+          "alice": 0
+        }
+      },
+      "expected": {
+        "text": "The house",
+        "state": {
+          "bob": 2,
+          "alice": 0
+        },
+        "transformation": {
+          "origin": null,
+          "data": null,
+          "notes": "no conflicts, no transformation"
+        }
+      }
+    },
+    {
+      "mutation": {
+        "author": "bob",
+        "conversationId": "conflict-delete-delete1",
+        "data": {
+          "type": "delete",
+          "index": 0,
+          "length": 4
+        },
+        "origin": {
+          "bob": 2,
+          "alice": 0
+        }
+      },
+      "expected": {
+        "text": "house",
+        "state": {
+          "bob": 3,
+          "alice": 0
+        },
+        "transformation": {
+          "origin": null,
+          "data": null,
+          "notes": "no conflicts, no transformation"
+        }
+      }
+    },
+    {
+      "mutation": {
+        "author": "bob",
+        "conversationId": "conflict-delete-delete1",
+        "data": {
+          "type": "insert",
+          "index": 0,
+          "text": "red "
+        },
+        "origin": {
+          "bob": 3,
+          "alice": 0
+        }
+      },
+      "expected": {
+        "text": "red house",
+        "state": {
+          "bob": 4,
+          "alice": 0
+        },
+        "transformation": {
+          "origin": null,
+          "data": null,
+          "notes": "no conflicts, no transformation"
+        }
+      }
+    },
+    {
+      "description": "alice deletes ' house'",
+      "mutation": {
+        "author": "alice",
+        "conversationId": "conflict-delete-delete1",
+        "data": {
+          "type": "delete",
+          "index": 3,
+          "length": 6
+        },
+        "origin": {
+          "bob": 2,
+          "alice": 0
+        }
+      },
+      "expected": {
+        "text": "The red house",
+        "state": {
+          "bob": 4,
+          "alice": 1
+        },
+        "transformation": {
+          "origin": {
+            "bob": 4,
+            "alice": 0
+          },
+          "data": {
+            "type": "delete",
+            "index": 7,
+            "length": 6
+          },
+          "textWithoutTransformation": "The",
+          "notes": "alice is trying to delete ' house', which got shifted over by 4 places in B(3,0). If existing insert index <= new index (either insert or delete), then shift by the length of the insert"
+        }
+      }
+    }
+  ]
+}

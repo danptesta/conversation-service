@@ -1,3 +1,5 @@
+/* eslint-disable arrow-body-style */
+
 const insertText = (text, data) => {
   const before = text.substring(0, data.index);
   const after = text.substring(data.index);
@@ -18,4 +20,8 @@ const editText = (text, mutation) => {
   return deleteText(text, data);
 };
 
-module.exports = editText;
+const makeText = ({ mutations, resolved }) => {
+  return [resolved, ...mutations].reduce(editText, '');
+};
+
+module.exports = makeText;

@@ -9,7 +9,7 @@ const {
   InvalidInputError,
 } = require('../../../src/helpers/errors');
 
-describe('app:', function () {
+describe.only('app:', function () {
   let app;
 
   beforeEach(async function () {
@@ -83,12 +83,12 @@ describe('app:', function () {
       });
     });
 
-    context('When the origin does not match current state:', function () {
+    context('When the origin does not match any existing mutation state:', function () {
       it('should throw an error', async function () {
         await rejectAddMutation({
           command: createAddMutationCommand({ origin: { alice: 0, bob: 1 } }),
           error: InvalidPropertyError,
-          errorMessage: 'origin does not match current state',
+          errorMessage: 'invalid origin',
         });
       });
     });
