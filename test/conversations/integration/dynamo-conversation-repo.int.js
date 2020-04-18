@@ -2,7 +2,7 @@
   class-methods-use-this,no-unused-expressions,global-require */
 
 const _ = require('lodash');
-const testExample = require('../helpers/test-example');
+const testAddMutations = require('../helpers/test-add-mutations');
 const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
 const makeApp = require('../../../src/conversations/app');
 const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
@@ -29,7 +29,7 @@ describe('app (conversation-repo-dynamo-adapter integration):', function () {
 
   context('When adding a example 1 mutations:', function () {
     it('should return the expected results', async function () {
-      await testExample(app, 'example1');
+      await testAddMutations(app, 'example1');
     });
   });
 

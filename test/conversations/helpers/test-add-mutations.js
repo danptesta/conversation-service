@@ -7,7 +7,7 @@ const testAddMutation = async ({ app, command, expected }) => {
   result.text.should.equal(expected.text, `text, command = ${JSON.stringify(command)}`);
 };
 
-const testExample = async (app, example) => {
+const testAddMutations = async (app, example) => {
   const data = JSON.parse(fs.readFileSync(`test/conversations/data/${example}.json`, 'utf-8'));
   const { tests } = data;
   for (let i = 0; i < tests.length; i += 1) {
@@ -19,4 +19,4 @@ const testExample = async (app, example) => {
   }
 };
 
-module.exports = testExample;
+module.exports = testAddMutations;
