@@ -3,9 +3,9 @@ const getState = require('./get-state');
 
 const transformDataInsertInsert = ({ mutation, conflict }) => {
   const result = { ...mutation.data };
-  result.index = (conflict.data.index < mutation.data.index)
-    ? mutation.data.index + conflict.data.text.length
-    : mutation.data.index;
+  if (conflict.data.index <= mutation.data.index) {
+    result.index += conflict.data.text.length;
+  }
   return result;
 };
 
@@ -17,8 +17,14 @@ const transformDataDeleteInsert = ({ mutation, conflict }) => {
   return result;
 };
 
-// const transformDataDeleteInsert = ({ mutation, conflict }) => {
-// };
+const transformDataInsertDelete = ({ mutation, conflict }) => {
+  const result = { ...mutation.data };
+  if (conflict.data.index <= mutation.data.index) {
+    const shifted = mutation.data.index - conflict.data.length;
+    result.index = (shifted > 0) ? shifted : 0;
+  }
+  return result;
+};
 
 const transformDataDeleteDelete = ({ mutation, conflict }) => {
   const result = { ...mutation.data };
@@ -43,9 +49,9 @@ const transformData = ({ mutation, conflict }) => {
   if (isInsert(mutation) && isInsert(conflict)) {
     return transformDataInsertInsert({ mutation, conflict });
   }
-  // if (isInsert(mutation) && isDelete(conflict)) {
-  // return transformDataInsertDelete({ mutation, conflict });
-  // }
+  if (isInsert(mutation) && isDelete(conflict)) {
+    return transformDataInsertDelete({ mutation, conflict });
+  }
   if (isDelete(mutation) && isInsert(conflict)) {
     return transformDataDeleteInsert({ mutation, conflict });
   }

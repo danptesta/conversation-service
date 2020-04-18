@@ -54,21 +54,21 @@ describe.only('app:', function () {
       });
     });
 
-    context('When there is delete-insert conflict with origin shift only:', function () {
+    context('When there is a delete-insert conflict with origin shift only:', function () {
       it('should return the expected results', async function () {
         await testAddMutations(app, 'conflict-delete-insert1');
       });
     });
 
-    context('When there is delete-insert conflict with origin and data shift:', function () {
+    context('When there is a delete-insert conflict with origin and data shift:', function () {
       it('should return the expected results', async function () {
         await testAddMutations(app, 'conflict-delete-insert2');
       });
     });
 
-    context('When there is delete-delete conflict:', function () {
+    context('When there is a delete-delete conflict:', function () {
       it('should return the expected results', async function () {
-        await testAddMutations(app, 'conflict-delete-delete1');
+        await testAddMutations(app, 'conflict-insert-delete1');
       });
     });
   });
