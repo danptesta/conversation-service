@@ -58,7 +58,7 @@ describe('conversations-http-port:', function () {
 
         assertHttpResponse({
           response,
-          expectedStatusCode: 200,
+          expectedStatusCode: 404,
           expectedBody: {
             ok: false,
             msg: 'conversation not found',
