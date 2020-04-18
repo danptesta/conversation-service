@@ -2,18 +2,12 @@
 const validateType = require('./validate-type');
 const makeConversation = require('../make-conversation');
 const validateState = require('./validate-state');
-const { isConflictingInsert } = require('./state');
+const { getState, isConflictingState } = require('./state');
 const editText = require('./edit-text');
 
-const validateMutation = (conversation, mutation) => {
-  validateType(conversation, mutation);
-  validateState(conversation, mutation);
-};
-
-const transformOrigin = (lastMutation) => {
-  const result = { ...lastMutation.origin };
-  result[lastMutation.author] += 1;
-  return result;
+const validateMutation = (lastMutation, mutation) => {
+  validateType(lastMutation, mutation);
+  validateState(lastMutation, mutation);
 };
 
 const transformIndex = (mutation, lastMutation) => {
@@ -28,22 +22,23 @@ const transformData = (mutation, lastMutation) => {
   return result;
 };
 
-const transformMutation = (mutation, lastMutation) => {
+const transformMutation = (lastMutation, mutation) => {
   const result = { ...mutation };
-  result.origin = transformOrigin(lastMutation);
+  result.origin = getState(lastMutation);
   result.data = transformData(mutation, lastMutation);
   return result;
 };
 
-const resolveMutation = (conversation, mutation) => {
-  return isConflictingInsert(conversation, mutation)
-    ? transformMutation(mutation, conversation.lastMutation)
+const resolveMutation = (lastMutation, mutation) => {
+  return isConflictingState(lastMutation, mutation)
+    ? transformMutation(lastMutation, mutation)
     : mutation;
 };
 
 const addMutation = (conversation, mutation) => {
-  validateMutation(conversation, mutation);
-  const resolved = resolveMutation(conversation, mutation);
+  const { lastMutation } = conversation;
+  validateMutation(lastMutation, mutation);
+  const resolved = resolveMutation(lastMutation, mutation);
   return makeConversation({
     conversationId: conversation.conversationId,
     text: editText(conversation.text, resolved),

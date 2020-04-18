@@ -79,7 +79,7 @@ describe('conversations-http-port:', function () {
 
         assertHttpResponse({
           response,
-          expectedStatusCode: 201,
+          expectedStatusCode: 400,
           expectedBody: {
             ok: false,
             msg: 'invalid input',
@@ -98,7 +98,7 @@ describe('conversations-http-port:', function () {
 
         assertHttpResponse({
           response,
-          expectedStatusCode: 201,
+          expectedStatusCode: 400,
           expectedBody: {
             ok: false,
             msg: 'origin does not match current state',

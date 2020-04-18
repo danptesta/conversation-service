@@ -93,16 +93,6 @@ describe('app:', function () {
       });
     });
 
-    context('When the insert index is out of range:', function () {
-      it('should throw an error', async function () {
-        await rejectAddMutation({
-          command: createAddMutationCommand({ data: { index: 1, text: 'hello', type: 'insert' } }),
-          error: InvalidPropertyError,
-          errorMessage: 'index is out of range',
-        });
-      });
-    });
-
     async function rejectAddMutation({
       command, error, errorMessage, customMessage,
     }) {
