@@ -126,7 +126,7 @@
         }
       },
       "expected": {
-        "text": "The red house",
+        "text": "red ",
         "state": {
           "bob": 4,
           "alice": 1
@@ -138,8 +138,8 @@
           },
           "data": {
             "type": "delete",
-            "index": 7,
-            "length": 6
+            "index": 4,
+            "length": 5
           },
           "textWithoutTransformation": "The",
           "notes": "alice is trying to delete ' house', which got shifted over by 4 places in B(3,0). If existing insert index <= new index (either insert or delete), then shift by the length of the insert"

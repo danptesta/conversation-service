@@ -65,5 +65,11 @@ describe.only('app:', function () {
         await testAddMutations(app, 'conflict-delete-insert2');
       });
     });
+
+    context('When there is delete-delete conflict:', function () {
+      it('should return the expected results', async function () {
+        await testAddMutations(app, 'conflict-delete-delete1');
+      });
+    });
   });
 });

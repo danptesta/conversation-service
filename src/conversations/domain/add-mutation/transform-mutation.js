@@ -11,7 +11,7 @@ const transformDataInsertInsert = ({ mutation, conflict }) => {
 
 const transformDataDeleteInsert = ({ mutation, conflict }) => {
   const result = { ...mutation.data };
-  if (conflict.data.index <= result.index) {
+  if (conflict.data.index <= mutation.data.index) {
     result.index += conflict.data.text.length;
   }
   return result;
@@ -20,11 +20,24 @@ const transformDataDeleteInsert = ({ mutation, conflict }) => {
 // const transformDataDeleteInsert = ({ mutation, conflict }) => {
 // };
 
-// const transformDataDeleteDelete = ({ mutation, conflict }) => {
-// };
+const transformDataDeleteDelete = ({ mutation, conflict }) => {
+  const result = { ...mutation.data };
+  if (conflict.data.index <= mutation.data.index) {
+    const shifted = mutation.data.index - conflict.data.length;
+    if (shifted < 0) {
+      // original intended string has already been truncated.
+      // adjust length accordingly to only delete the remainder of the truncated section of text.
+      result.length -= shifted;
+      result.index = 0;
+    } else {
+      result.index = shifted;
+    }
+  }
+  return result;
+};
 
 const isInsert = mutation => mutation.data.type === 'insert';
-// const isDelete = mutation => mutation.data.type === 'delete';
+const isDelete = mutation => mutation.data.type === 'delete';
 
 const transformData = ({ mutation, conflict }) => {
   if (isInsert(mutation) && isInsert(conflict)) {
@@ -33,10 +46,10 @@ const transformData = ({ mutation, conflict }) => {
   // if (isInsert(mutation) && isDelete(conflict)) {
   // return transformDataInsertDelete({ mutation, conflict });
   // }
-  // if (isDelete(mutation) && isInsert(conflict)) {
-  return transformDataDeleteInsert({ mutation, conflict });
-  // }
-  // return transformDataDeleteDelete({ mutation, conflict });
+  if (isDelete(mutation) && isInsert(conflict)) {
+    return transformDataDeleteInsert({ mutation, conflict });
+  }
+  return transformDataDeleteDelete({ mutation, conflict });
 };
 
 const transformMutation = (mutation, conflict) => {
