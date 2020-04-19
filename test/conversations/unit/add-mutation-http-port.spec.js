@@ -88,7 +88,7 @@ describe('conversations-http-port:', function () {
       });
     });
 
-    context('When the origin does not match current state:', function () {
+    context('When the origin does not match any existing mutation state:', function () {
       it('should return error', async function () {
         const response = await handle({
           path: '/mutations',
@@ -101,7 +101,7 @@ describe('conversations-http-port:', function () {
           expectedStatusCode: 400,
           expectedBody: {
             ok: false,
-            msg: 'origin does not match current state',
+            msg: 'invalid origin',
           },
         });
       });

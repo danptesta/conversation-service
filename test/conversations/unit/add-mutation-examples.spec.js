@@ -6,7 +6,7 @@ const makeApp = require('../../../src/conversations/app');
 const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
 const testAddMutations = require('../helpers/test-add-mutations');
 
-describe.only('app:', function () {
+describe('app:', function () {
   let app;
 
   beforeEach(async function () {

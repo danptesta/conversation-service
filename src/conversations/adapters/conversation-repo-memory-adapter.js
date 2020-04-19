@@ -1,6 +1,6 @@
 /* eslint-disable arrow-body-style */
 const makeMemoryConversationRepoAdapter = () => {
-  const mutations = [];
+  let mutations = [];
 
   const findMutationsByConversationId = async (conversationId) => {
     return mutations.filter(mutation => mutation.conversationId === conversationId);
@@ -14,10 +14,15 @@ const makeMemoryConversationRepoAdapter = () => {
     return mutations;
   };
 
+  const deleteMutationsByConversationId = (conversationId) => {
+    mutations = mutations.filter(mutation => mutation.conversationId !== conversationId);
+  };
+
   return Object.freeze({
     findMutationsByConversationId,
     addMutation,
     listMutations,
+    deleteMutationsByConversationId,
   });
 };
 
