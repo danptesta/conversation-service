@@ -14,13 +14,28 @@ const makeMutationRepoDynamoAdapter = (tableName = 'mutations') => {
     timestamp: Date.now(),
   });
 
+  const removeTimestamp = (mutations) => {
+    const result = [];
+    mutations.forEach((mutation) => {
+      const { timestamp, ...restOfMutation } = mutation;
+      result.push(restOfMutation);
+    });
+    return result;
+  };
+
   return Object.freeze({
     addMutation: async (mutation) => {
       await dynamoRepoAdapter.insertRecord(addTimestamp(mutation));
     },
-    findMutationsByConversationId: dynamoRepoAdapter.findRecordsById,
-    listMutations: dynamoRepoAdapter.listRecords,
-    // todo: deleteMutationsByConversationId: dynamoRepoAdapter.deleteRecords,
+    findMutationsByConversationId: async (conversationId) => {
+      const mutations = await dynamoRepoAdapter.findRecordsById(conversationId);
+      return removeTimestamp(mutations);
+    },
+    listMutations: async () => {
+      const mutations = await dynamoRepoAdapter.listRecords();
+      return removeTimestamp(mutations);
+    },
+    deleteMutationsByConversationId: dynamoRepoAdapter.deleteRecords,
   });
 };
 

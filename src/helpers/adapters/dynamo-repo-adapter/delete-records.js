@@ -43,7 +43,7 @@ const makeDeleteRecords = ({
   };
 
   const deleteRecords = async (id) => {
-    const recordsToDelete = findRecordsById(id);
+    const recordsToDelete = await findRecordsById(id);
     const params = makeParams(recordsToDelete);
 
     const startTime = Date.now();
