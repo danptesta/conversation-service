@@ -83,7 +83,7 @@ describe('app:', function () {
       });
     });
 
-    context('When the origin does not match any existing mutation state:', function () {
+    context('When the origin does not match the initial state on a new conversation:', function () {
       it('should throw an error', async function () {
         await rejectAddMutation({
           command: createAddMutationCommand({ origin: { alice: 0, bob: 1 } }),
