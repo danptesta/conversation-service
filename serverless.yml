@@ -13,7 +13,9 @@ provider:
         - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:Scan
-      Resource: arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/conversations
+        - dynamodb:Query
+        - dynamodb:BatchWriteItem
+      Resource: arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/mutations
 
 package:
   exclude:
@@ -94,14 +96,18 @@ functions:
 
 resources:
   Resources:
-    ConversationsDynamoDbTable:
+    MutationsDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       Properties:
-        TableName: conversations
+        TableName: mutations
         AttributeDefinitions:
           - AttributeName: "conversationId"
             AttributeType: "S"   
+          - AttributeName: "timestamp"
+            AttributeType: "N"   
         KeySchema:
           - AttributeName: "conversationId"
             KeyType: "HASH"
+          - AttributeName: "timestamp"
+            KeyType: "RANGE"
         BillingMode: PAY_PER_REQUEST

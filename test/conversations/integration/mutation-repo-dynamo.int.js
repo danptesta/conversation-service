@@ -6,14 +6,14 @@ const testAddMutations = require('../helpers/test-add-mutations');
 const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
 const makeApp = require('../../../src/conversations/app');
 const repositoryFixture = require('../fixtures/mutation-repo-fixture')();
-const { createTestTable, deleteTestTable } = require('./dynamo-conversation-repo-helper');
+const { createTestTable, deleteTestTable } = require('./mutation-repo-dynamo-helper');
 const {
   ConversationNotFoundError,
 } = require('../../../src/helpers/errors');
 
-const tableName = `conversationTest${new Date().getTime()}`;
+const tableName = `mutationsTest${new Date().getTime()}`;
 
-describe('app (conversation-repo-dynamo-adapter integration):', function () {
+describe('app (mutation-repo-dynamo-adapter integration):', function () {
   this.timeout(120000);
   let app;
 

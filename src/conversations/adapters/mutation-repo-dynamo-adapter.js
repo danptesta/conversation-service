@@ -1,19 +1,26 @@
 const makeDynamoRepoAdapter = require('../../helpers/adapters/dynamo-repo-adapter');
 
-const makeMutationRepoDynamoAdapter = (tableName = 'conversations') => {
+const makeMutationRepoDynamoAdapter = (tableName = 'mutations') => {
   const dynamoRepoAdapter = makeDynamoRepoAdapter({
     service: 'conversation',
     port: 'conversation-repo',
     tableName,
-    idField: 'conversationId',
+    partitionKey: 'conversationId',
+    sortKey: 'timestamp',
+  });
+
+  const addTimestamp = mutation => ({
+    ...mutation,
+    timestamp: Date.now(),
   });
 
   return Object.freeze({
-    insertConversation: dynamoRepoAdapter.insertRecord,
-    findConversationById: dynamoRepoAdapter.findRecordById,
-    updateConversation: dynamoRepoAdapter.updateRecord,
-    listConversations: dynamoRepoAdapter.listRecords,
-    deleteConversation: dynamoRepoAdapter.deleteRecord,
+    addMutation: async (mutation) => {
+      await dynamoRepoAdapter.insertRecord(addTimestamp(mutation));
+    },
+    findMutationsByConversationId: dynamoRepoAdapter.findRecordsById,
+    listMutations: dynamoRepoAdapter.listRecords,
+    // todo: deleteMutationsByConversationId: dynamoRepoAdapter.deleteRecords,
   });
 };
 

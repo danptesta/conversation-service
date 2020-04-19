@@ -3,7 +3,7 @@ const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB();
 
 module.exports.createTestTable = async function createTestTable(tableName) {
-  console.log(`Creating conversations table with name '${tableName}'...`);
+  console.log(`Creating mutations table with name '${tableName}'...`);
   const start = new Date().getTime();
 
   const params = {
@@ -12,11 +12,21 @@ module.exports.createTestTable = async function createTestTable(tableName) {
         AttributeName: 'conversationId',
         AttributeType: 'S',
       },
+      {
+        AttributeName: 'timestamp',
+        AttributeType: 'N',
+      },
     ],
-    KeySchema: [{
-      AttributeName: 'conversationId',
-      KeyType: 'HASH',
-    }],
+    KeySchema: [
+      {
+        AttributeName: 'conversationId',
+        KeyType: 'HASH',
+      },
+      {
+        AttributeName: 'timestamp',
+        KeyType: 'RANGE',
+      },
+    ],
     TableName: tableName,
     BillingMode: 'PAY_PER_REQUEST',
   };
@@ -26,12 +36,12 @@ module.exports.createTestTable = async function createTestTable(tableName) {
     TableName: tableName,
   }).promise();
 
-  console.log(`...created conversations table with name '${tableName}, `
+  console.log(`...created mutations table with name '${tableName}, `
     + `elapsed time (ms) =  ${(new Date().getTime()) - start}'.`);
 };
 
 module.exports.deleteTestTable = async function deleteTestTable(tableName) {
-  console.log(`Deleting conversations table with name '${tableName}'...`);
+  console.log(`Deleting mutations table with name '${tableName}'...`);
   const start = new Date().getTime();
 
   await dynamoDb.deleteTable({
@@ -43,6 +53,6 @@ module.exports.deleteTestTable = async function deleteTestTable(tableName) {
   //   TableName: tableName,
   // }).promise();
 
-  console.log(`...deleted conversations table with name '${tableName}', `
+  console.log(`...deleted mutations table with name '${tableName}', `
     + `elapsed time (ms) =  ${(new Date().getTime()) - start}'.`);
 };

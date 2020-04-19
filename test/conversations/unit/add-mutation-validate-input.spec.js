@@ -47,7 +47,7 @@ describe('app:', function () {
         await rejectInvalidInput({ conversationId: 'x y' }, 'no space allowed');
         await rejectInvalidInput({ conversationId: 'x' }, 'must be >= 2 chars');
         await rejectInvalidInput({ author: 'dan' }, 'must be alice or bob');
-        await rejectInvalidInput({ invalidField: 'xyz' }, 'field not allowed');
+        await rejectInvalidInput({ invalpartitionKey: 'xyz' }, 'field not allowed');
         // etc, etc, many possible permutations of invalid input
         // this is quick/simple way to guard against invalid input,
         // but not very user-friendly.  if I had more time I would improve
