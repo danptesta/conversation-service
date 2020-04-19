@@ -3,7 +3,7 @@
   no-restricted-syntax, no-await-in-loop */
 
 const makeApp = require('../../../src/conversations/app');
-const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
+const repositoryFixture = require('../fixtures/mutation-repo-fixture')();
 const assertHttpResponse = require('../helpers/assert-http-response');
 const makeErrorApp = require('./error-app');
 const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
@@ -88,7 +88,7 @@ describe('conversations-http-port:', function () {
       });
     });
 
-    context('When the origin does not match current state:', function () {
+    context('When the origin does not match any existing mutation state:', function () {
       it('should return error', async function () {
         const response = await handle({
           path: '/mutations',
@@ -101,7 +101,7 @@ describe('conversations-http-port:', function () {
           expectedStatusCode: 400,
           expectedBody: {
             ok: false,
-            msg: 'origin does not match current state',
+            msg: 'invalid origin',
           },
         });
       });

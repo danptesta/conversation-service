@@ -12,7 +12,7 @@ const validateDeleteData = (data) => {
   }
 };
 
-const validateType = (lastMutation, mutation) => {
+const validateType = (mutation) => {
   const { data } = mutation;
   if (data.type === 'insert') {
     validateInsertData(data);

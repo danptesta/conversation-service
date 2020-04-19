@@ -1,6 +1,5 @@
-// const uuidv1 = require('uuid/v1');
-const makeMemoryRepository = require('../../../src/conversations/adapters/conversation-repo-memory-adapter');
-const makeDynamoRepository = require('../../../src/conversations/adapters/conversation-repo-dynamo-adapter');
+const makeMemoryRepository = require('../../../src/conversations/adapters/mutation-repo-memory-adapter');
+const makeDynamoRepository = require('../../../src/conversations/adapters/mutation-repo-dynamo-adapter');
 
 module.exports = function makeRepositoryFixture() {
   return Object.freeze({

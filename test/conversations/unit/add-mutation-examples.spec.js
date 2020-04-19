@@ -3,8 +3,12 @@
   class-methods-use-this,no-unused-expressions,global-require */
 
 const makeApp = require('../../../src/conversations/app');
-const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
+const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
+const repositoryFixture = require('../fixtures/mutation-repo-fixture')();
 const testAddMutations = require('../helpers/test-add-mutations');
+const {
+  InvalidPropertyError,
+} = require('../../../src/helpers/errors');
 
 describe('app:', function () {
   let app;
@@ -46,7 +50,7 @@ describe('app:', function () {
     });
 
     context('Example 4b - insert mutations from Bob and Alice, with conflicts reversed:', function () {
-      it('should return the exected results (commutative)', async function () {
+      it('should return the expected results (commutative)', async function () {
         await testAddMutations(app, 'example1');
         await testAddMutations(app, 'example2');
         await testAddMutations(app, 'example3');
@@ -54,10 +58,55 @@ describe('app:', function () {
       });
     });
 
-    context.skip('When there are delete conflicts:', function () {
-      it('should return the exected results', async function () {
-        await testAddMutations(app, 'delete-conflict');
+    context('When there is a delete-insert conflict with origin shift only:', function () {
+      it('should return the expected results', async function () {
+        await testAddMutations(app, 'conflict-delete-insert1');
       });
     });
+
+    context('When there is a delete-insert conflict with origin and data shift:', function () {
+      it('should return the expected results', async function () {
+        await testAddMutations(app, 'conflict-delete-insert2');
+      });
+    });
+
+    context('When there is a insert-delete conflict:', function () {
+      it('should return the expected results', async function () {
+        await testAddMutations(app, 'conflict-insert-delete1');
+      });
+    });
+
+    context('When there is a delete-delete conflict with origin and data (index + length) shift:', function () {
+      it('should return the expected results', async function () {
+        await testAddMutations(app, 'conflict-delete-delete1');
+      });
+    });
+
+    context('When there is a delete-delete conflict with origin and data (index only) shift:', function () {
+      it('should return the expected results', async function () {
+        await testAddMutations(app, 'conflict-delete-delete2');
+      });
+    });
+
+    context('When the origin does not match any existing mutation state:', function () {
+      it('should throw an error', async function () {
+        // state will be at (4,0) after example1 is loaded
+        await testAddMutations(app, 'example1');
+        await rejectAddMutation({
+          command: createAddMutationCommand({
+            conversationId: 'examples',
+            origin: { alice: 0, bob: 10 },
+          }),
+          error: InvalidPropertyError,
+          errorMessage: 'invalid origin',
+        });
+      });
+    });
+
+    async function rejectAddMutation({
+      command, error, errorMessage, customMessage,
+    }) {
+      await app.addMutation(command).should.be.rejectedWith(error, errorMessage, customMessage);
+    }
   });
 });

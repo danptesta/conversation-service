@@ -2,11 +2,11 @@ const makeFindRecordById = ({
   tableName,
   docClient,
   logger,
-  idField,
+  partitionKey,
 }) => {
   const findRecordById = async (id) => {
     const Key = {};
-    Key[idField] = id;
+    Key[partitionKey] = id;
     const params = {
       TableName: tableName,
       Key,

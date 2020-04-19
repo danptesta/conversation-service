@@ -1,0 +1,148 @@
+{
+  "description": "add delete mutation that conflicts with insert",
+  "expectedTransformation": "origin shifts, data shifts (index only)",
+  "tests": [
+    {
+      "mutation": {
+        "author": "bob",
+        "conversationId": "conflict-delete-insert2",
+        "data": {
+          "type": "insert",
+          "index": 0,
+          "text": "The"
+        },
+        "origin": {
+          "bob": 0,
+          "alice": 0
+        }
+      },
+      "expected": {
+        "text": "The",
+        "state": {
+          "bob": 1,
+          "alice": 0
+        },
+        "transformation": {
+          "origin": null,
+          "data": null,
+          "notes": "no conflicts, no transformation"
+        }
+      }
+    },
+    {
+      "mutation": {
+        "author": "bob",
+        "conversationId": "conflict-delete-insert2",
+        "data": {
+          "type": "insert",
+          "index": 3,
+          "text": " house"
+        },
+        "origin": {
+          "bob": 1,
+          "alice": 0
+        }
+      },
+      "expected": {
+        "text": "The house",
+        "state": {
+          "bob": 2,
+          "alice": 0
+        },
+        "transformation": {
+          "origin": null,
+          "data": null,
+          "notes": "no conflicts, no transformation"
+        }
+      }
+    },
+    {
+      "mutation": {
+        "author": "bob",
+        "conversationId": "conflict-delete-insert2",
+        "data": {
+          "type": "insert",
+          "index": 9,
+          "text": " is"
+        },
+        "origin": {
+          "bob": 2,
+          "alice": 0
+        }
+      },
+      "expected": {
+        "text": "The house is",
+        "state": {
+          "bob": 3,
+          "alice": 0
+        },
+        "transformation": {
+          "origin": null,
+          "data": null,
+          "notes": "no conflicts, no transformation"
+        }
+      }
+    },
+    {
+      "mutation": {
+        "author": "bob",
+        "conversationId": "conflict-delete-insert2",
+        "data": {
+          "type": "insert",
+          "index": 3,
+          "text": " red"
+        },
+        "origin": {
+          "bob": 3,
+          "alice": 0
+        }
+      },
+      "expected": {
+        "text": "The red house is",
+        "state": {
+          "bob": 4,
+          "alice": 0
+        },
+        "transformation": {
+          "origin": null,
+          "data": null,
+          "notes": "no conflicts, no transformation"
+        }
+      }
+    },
+    {
+      "mutation": {
+        "author": "alice",
+        "conversationId": "conflict-delete-insert2",
+        "data": {
+          "type": "delete",
+          "index": 3,
+          "length": 6
+        },
+        "origin": {
+          "bob": 2,
+          "alice": 0
+        }
+      },
+      "expected": {
+        "text": "The red is",
+        "state": {
+          "bob": 4,
+          "alice": 1
+        },
+        "transformation": {
+          "origin": {
+            "bob": 4,
+            "alice": 0
+          },
+          "data": {
+            "type": "delete",
+            "index": 7,
+            "length": 6
+          },
+          "notes": "alice is trying to delete ' house'"
+        }
+      }
+    }
+  ]
+}

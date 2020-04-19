@@ -8,7 +8,7 @@
     "lint": "./node_modules/.bin/eslint --fix --ext .js ./test ./src",
     "coverage": "nyc mocha ./test/**/*.spec.js ; nyc report --reporter=html",
     "mutate": "npx stryker run",
-    "int-conversation-repo": "./scripts/test-integration ./test/conversations/integration/dynamo-conversation-repo.int.js"
+    "int-dynamo-repo": "./scripts/test-integration ./test/conversations/integration/mutation-repo-dynamo.int.js"
   },
   "dependencies": {
     "ajv": "^6.12.0",

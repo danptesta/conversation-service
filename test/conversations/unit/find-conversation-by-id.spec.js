@@ -3,7 +3,7 @@
 
 const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
 const makeApp = require('../../../src/conversations/app');
-const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
+const repositoryFixture = require('../fixtures/mutation-repo-fixture')();
 const { ConversationNotFoundError } = require('../../../src/helpers/errors');
 
 describe('app:', function () {

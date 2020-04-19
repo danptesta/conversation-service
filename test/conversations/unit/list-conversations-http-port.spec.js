@@ -4,7 +4,7 @@
 
 const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
 const makeApp = require('../../../src/conversations/app');
-const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
+const repositoryFixture = require('../fixtures/mutation-repo-fixture')();
 const assertHttpResponse = require('../helpers/assert-http-response');
 const makeHttpPortHandler = require('../../../src/conversations/ports/conversations-http-port');
 
