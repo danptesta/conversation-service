@@ -1,5 +1,5 @@
 /* eslint-disable arrow-body-style */
-const makeMemoryConversationRepoAdapter = () => {
+const makeMemoryMutationRepoAdapter = () => {
   let mutations = [];
 
   const findMutationsByConversationId = async (conversationId) => {
@@ -26,4 +26,4 @@ const makeMemoryConversationRepoAdapter = () => {
   });
 };
 
-module.exports = makeMemoryConversationRepoAdapter;
+module.exports = makeMemoryMutationRepoAdapter;

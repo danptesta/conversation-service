@@ -1,6 +1,6 @@
 const makeDynamoRepoAdapter = require('../../helpers/adapters/dynamo-repo-adapter');
 
-const makeConversationRepoDynamoAdapter = (tableName = 'conversations') => {
+const makeMutationRepoDynamoAdapter = (tableName = 'conversations') => {
   const dynamoRepoAdapter = makeDynamoRepoAdapter({
     service: 'conversation',
     port: 'conversation-repo',
@@ -17,4 +17,4 @@ const makeConversationRepoDynamoAdapter = (tableName = 'conversations') => {
   });
 };
 
-module.exports = makeConversationRepoDynamoAdapter;
+module.exports = makeMutationRepoDynamoAdapter;

@@ -3,7 +3,7 @@
   no-restricted-syntax, no-await-in-loop */
 
 const makeApp = require('../../../src/conversations/app');
-const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
+const repositoryFixture = require('../fixtures/mutation-repo-fixture')();
 const assertHttpResponse = require('../helpers/assert-http-response');
 const makeErrorApp = require('./error-app');
 const { createAddMutationCommand } = require('../fixtures/conversations-fixture');

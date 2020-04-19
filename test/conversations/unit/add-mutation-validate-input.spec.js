@@ -3,7 +3,7 @@
 
 const makeApp = require('../../../src/conversations/app');
 const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
-const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
+const repositoryFixture = require('../fixtures/mutation-repo-fixture')();
 const {
   InvalidPropertyError,
   InvalidInputError,

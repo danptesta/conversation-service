@@ -5,7 +5,7 @@ const _ = require('lodash');
 const testAddMutations = require('../helpers/test-add-mutations');
 const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
 const makeApp = require('../../../src/conversations/app');
-const repositoryFixture = require('../fixtures/conversation-repo-fixture')();
+const repositoryFixture = require('../fixtures/mutation-repo-fixture')();
 const { createTestTable, deleteTestTable } = require('./dynamo-conversation-repo-helper');
 const {
   ConversationNotFoundError,

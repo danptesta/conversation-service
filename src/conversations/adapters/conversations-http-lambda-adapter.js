@@ -1,4 +1,4 @@
-const repository = require('./conversation-repo-dynamo-adapter')();
+const repository = require('./mutation-repo-dynamo-adapter')();
 const app = require('../app')({ repository });
 const handleHttpPort = require('../ports/conversations-http-port')({ app });
 const makeLambdaHttpAdapter = require('../../helpers/adapters/lambda-http-adapter');
