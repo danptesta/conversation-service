@@ -94,11 +94,11 @@ describe('app:', function () {
       });
     });
 
-    // context('When there are many conflicts:', function () {
-    //   it('should return the expected results', async function () {
-    //     await testAddMutations(app, 'conflict-many');
-    //   });
-    // });
+    context('When there are many conflicts:', function () {
+      it('should return the expected results', async function () {
+        await testAddMutations(app, 'conflict-many');
+      });
+    });
 
     context('When the origin (0,0) is used on an existing conversation:', function () {
       it('should throw an error', async function () {
