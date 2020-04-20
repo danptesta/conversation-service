@@ -3,12 +3,12 @@
   class-methods-use-this,no-unused-expressions,global-require */
 
 const makeApp = require('../../../src/conversations/app');
-// const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
+const { createAddMutationCommand } = require('../fixtures/conversations-fixture');
 const repositoryFixture = require('../fixtures/mutation-repo-fixture')();
 const testAddMutations = require('../helpers/test-add-mutations');
-// const {
-//   InvalidPropertyError,
-// } = require('../../../src/helpers/errors');
+const {
+  InvalidPropertyError,
+} = require('../../../src/helpers/errors');
 
 describe('app:', function () {
   let app;
@@ -94,25 +94,31 @@ describe('app:', function () {
       });
     });
 
-    // context('When the origin does not match any existing mutation state:', function () {
-    //   it('should throw an error', async function () {
-    //     // state will be at (4,0) after example1 is loaded
-    //     await testAddMutations(app, 'example1');
-    //     await rejectAddMutation({
-    //       command: createAddMutationCommand({
-    //         conversationId: 'examples',
-    //         origin: { alice: 0, bob: 10 },
-    //       }),
-    //       error: InvalidPropertyError,
-    //       errorMessage: 'invalid origin',
-    //     });
-    //   });
-    // });
+    context('When there are many conflicts:', function () {
+      it('should return the expected results', async function () {
+        await testAddMutations(app, 'conflict-many');
+      });
+    });
 
-    // async function rejectAddMutation({
-    //   command, error, errorMessage, customMessage,
-    // }) {
-    //   await app.addMutation(command).should.be.rejectedWith(error, errorMessage, customMessage);
-    // }
+    context('When the origin (0,0) is used on an existing conversation:', function () {
+      it('should throw an error', async function () {
+        // state will be at (4,0) after example1 is loaded
+        await testAddMutations(app, 'example1');
+        await rejectAddMutation({
+          command: createAddMutationCommand({
+            conversationId: 'examples',
+            origin: { alice: 0, bob: 0 },
+          }),
+          error: InvalidPropertyError,
+          errorMessage: 'cannot use origin (0,0) on existing conversation',
+        });
+      });
+    });
+
+    async function rejectAddMutation({
+      command, error, errorMessage, customMessage,
+    }) {
+      await app.addMutation(command).should.be.rejectedWith(error, errorMessage, customMessage);
+    }
   });
 });
