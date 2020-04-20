@@ -1,5 +1,4 @@
 const { getState } = require('./state');
-const { InvalidPropertyError } = require('../../../helpers/errors');
 
 // eslint-disable-next-line arrow-body-style
 const originMatchesState = ({ origin, state }) => {
@@ -7,16 +6,12 @@ const originMatchesState = ({ origin, state }) => {
 };
 
 const findFirstConflictBetweenAuthorsIndex = ({ mutations, mutation }) => {
-  for (let i = mutations.length - 1; i >= 0; i -= 1) {
+  for (let i = mutations.length - 1; i > 0; i -= 1) {
     if (originMatchesState({ origin: mutation.origin, state: getState(mutations[i]) })) {
       return i + 1;
     }
-    if (mutations[i].author === mutation.author) {
-      // it is not valid to have conflict with both author and collaborator
-      throw new InvalidPropertyError("origin conflicts with both author and collabortor's previous state");
-    }
   }
-  throw new InvalidPropertyError('no previous matching state found for origin');
+  return 1;
 };
 
 const isConflict = ({ mutation, lastMutation }) => {
