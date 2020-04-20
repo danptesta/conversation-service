@@ -83,12 +83,12 @@ describe('app:', function () {
       });
     });
 
-    context('When the origin does not match the initial state on a new conversation:', function () {
+    context('When the origin is out of bounds:', function () {
       it('should throw an error', async function () {
         await rejectAddMutation({
           command: createAddMutationCommand({ origin: { alice: 0, bob: 1 } }),
           error: InvalidPropertyError,
-          errorMessage: 'invalid origin',
+          errorMessage: 'origin out of bounds',
         });
       });
     });
