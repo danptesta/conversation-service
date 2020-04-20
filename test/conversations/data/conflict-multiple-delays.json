@@ -1,0 +1,172 @@
+{
+  "description": "this simulates multiple delays from one author",
+  "expectedTransformation": "origin shifted, data remains same",
+  "tests": [
+    {
+      "mutation": {
+        "author": "bob",
+        "conversationId": "conflict-multiple-delays",
+        "data": {
+          "type": "insert",
+          "index": 0,
+          "text": "The"
+        },
+        "origin": {
+          "bob": 0,
+          "alice": 0
+        }
+      },
+      "expected": {
+        "text": "The",
+        "state": {
+          "bob": 1,
+          "alice": 0
+        },
+        "transformation": {
+          "origin": null,
+          "data": null,
+          "notes": "no conflicts, no transformation"
+        }
+      }
+    },
+    {
+      "mutation": {
+        "author": "bob",
+        "conversationId": "conflict-multiple-delays",
+        "data": {
+          "type": "insert",
+          "index": 3,
+          "text": " house"
+        },
+        "origin": {
+          "bob": 1,
+          "alice": 0
+        }
+      },
+      "expected": {
+        "text": "The house",
+        "state": {
+          "bob": 2,
+          "alice": 0
+        },
+        "transformation": {
+          "origin": null,
+          "data": null,
+          "notes": "no conflicts, no transformation"
+        }
+      }
+    },
+    {
+      "mutation": {
+        "author": "bob",
+        "conversationId": "conflict-multiple-delays",
+        "data": {
+          "type": "insert",
+          "index": 9,
+          "text": " is"
+        },
+        "origin": {
+          "bob": 2,
+          "alice": 0
+        }
+      },
+      "expected": {
+        "text": "The house is",
+        "state": {
+          "bob": 3,
+          "alice": 0
+        },
+        "transformation": {
+          "origin": null,
+          "data": null,
+          "notes": "no conflicts, no transformation"
+        }
+      }
+    },
+    {
+      "mutation": {
+        "author": "bob",
+        "conversationId": "conflict-multiple-delays",
+        "data": {
+          "type": "insert",
+          "index": 12,
+          "text": " red."
+        },
+        "origin": {
+          "bob": 3,
+          "alice": 0
+        }
+      },
+      "expected": {
+        "text": "The house is red.",
+        "state": {
+          "bob": 4,
+          "alice": 0
+        },
+        "transformation": {
+          "origin": null,
+          "data": null,
+          "notes": "no conflicts, no transformation"
+        }
+      }
+    },
+    {
+      "mutation": {
+        "author": "alice",
+        "conversationId": "conflict-multiple-delays",
+        "data": {
+          "type": "delete",
+          "index": 0,
+          "length": 3
+        },
+        "origin": {
+          "bob": 2,
+          "alice": 0
+        }
+      },
+      "expected": {
+        "text": " house is red.",
+        "state": {
+          "bob": 4,
+          "alice": 1
+        },
+        "transformation": {
+          "origin": {
+            "bob": 4,
+            "alice": 0
+          },
+          "data": null
+        }
+      }
+    },
+    {
+      "mutation": {
+        "author": "alice",
+        "conversationId": "conflict-multiple-delays",
+        "data": {
+          "type": "insert",
+          "index": 0,
+          "text": "THE BIG"
+        },
+        "origin": {
+          "bob": 2,
+          "alice": 1
+        }
+      },
+      "expected": {
+        "text": "THE BIG house is red.",
+        "state": {
+          "bob": 4,
+          "alice": 2
+        },
+        "transformation": {
+          "origin": {
+            "bob": 4,
+            "alice": 1
+          },
+          "data": null
+        }
+      }
+    }
+  ]
+}

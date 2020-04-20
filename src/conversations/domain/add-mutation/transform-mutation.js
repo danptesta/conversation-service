@@ -1,5 +1,5 @@
 /* eslint-disable arrow-body-style */
-const getState = require('./get-state');
+const { getState } = require('./state');
 
 const transformDataInsertInsert = ({ mutation, conflict }) => {
   const result = { ...mutation.data };
@@ -61,7 +61,9 @@ const transformData = ({ mutation, conflict }) => {
 const transformMutation = (mutation, conflict) => {
   const result = { ...mutation };
   result.origin = getState(conflict);
-  result.data = transformData({ mutation, conflict });
+  if (mutation.author !== conflict.author) {
+    result.data = transformData({ mutation, conflict });
+  }
   return result;
 };
 
