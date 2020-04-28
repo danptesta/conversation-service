@@ -10,7 +10,7 @@ const isOriginOutOfBounds = ({ mutations, mutation }) => {
 const isInitialOriginOnExistingConversation = ({ mutations, mutation }) => {
   const { origin } = mutation;
   return origin.alice === 0 && origin.bob === 0 && mutations.length > 0;
-}
+};
 
 const validateOrigin = ({ mutations, mutation }) => {
   if (isOriginOutOfBounds({ mutations, mutation })) {

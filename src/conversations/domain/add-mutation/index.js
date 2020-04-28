@@ -11,14 +11,14 @@ const validateMutation = ({ mutations, mutation }) => {
   validateOrigin({ mutations, mutation });
 };
 
-const resolveMutation = ({ mutations, mutation }) => {
+const resolveConflicts = ({ mutations, mutation }) => {
   const conflicts = findConflicts({ mutations, mutation });
   return conflicts.reduce(transformMutation, mutation);
 };
 
 const addMutation = ({ mutations, mutation }) => {
   validateMutation({ mutations, mutation });
-  const resolved = resolveMutation({ mutations, mutation });
+  const resolved = resolveConflicts({ mutations, mutation });
   return makeConversation([...mutations, resolved]);
 };
 
