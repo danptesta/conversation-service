@@ -11,7 +11,7 @@
     "int-dynamo-repo": "./scripts/test-integration ./test/conversations/integration/mutation-repo-dynamo.int.js"
   },
   "dependencies": {
-    "ajv": "^6.12.0",
+    "ajv": "^6.12.3",
     "aws-sdk": "^2.653.0",
     "axios": "^0.19.0",
     "date-fns": "^2.11.1",
